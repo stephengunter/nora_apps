@@ -20,8 +20,8 @@ const drawer = computed({
 	<v-navigation-drawer app v-model="drawer">
 		<v-list nav>
 			<v-list-item prepend-icon="mdi-home" to="/" title="首頁" value="home" />
-			<v-list-item prepend-icon="mdi-puzzle" title="小遊戲" value="games" />
-			<v-list-item prepend-icon="mdi-tools" title="工具箱" value="tools" />	
+			<v-list-item prepend-icon="mdi-puzzle" to="/games" title="小遊戲" value="games" />
+			<v-list-item prepend-icon="mdi-tools" to="/tools" title="工具箱" value="tools" />	
 		</v-list>
 	</v-navigation-drawer>
 </template>

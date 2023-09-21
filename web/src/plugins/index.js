@@ -15,9 +15,9 @@ export function registerPlugins (app) {
 			preset: 'vuetify'
 		})
 		.use(timeago, {
-			converterOptions: {
-				includeSeconds: false,
-			},
+			// converterOptions: {
+			// 	includeSeconds: false,
+			// },
 			locale: zhTW
 		})
 		.use(router)

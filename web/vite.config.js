@@ -21,10 +21,10 @@ export default defineConfig({
          },
       }),
       Components({
-      deep: true,
-      directoryAsNamespace: true
-      // 配置文件生成位置
-      //dts: 'src/components.d.ts'
+         deep: true,
+         directoryAsNamespace: true
+         // 配置文件生成位置
+         //dts: 'src/components.d.ts'
       })
    ],
    define: { 'process.env': {} },

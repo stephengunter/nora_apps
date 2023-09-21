@@ -10,6 +10,7 @@ import { nextTick } from 'vue'
 const initialState = {
    breadItems: [],
    loading: false,
+   loadingText: '',
    sideBarWidth: 260,
    windowWidth: 991,
    responsive: false,

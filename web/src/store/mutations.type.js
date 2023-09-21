@@ -20,5 +20,6 @@ export const SET_USER = 'setUser'
 export const SET_ERROR = 'setError'
 export const CLEAR_ERROR = 'clearError'
 
-// Articles
+//Articles
+export const SET_ARTICLES = 'setArticles';
 export const SET_TAGS = 'setTags'

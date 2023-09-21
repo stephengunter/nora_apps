@@ -1,13 +1,23 @@
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
+const props = defineProps({
+   model: {
+		type: Object,
+		default: null
+	}
+})
 
-const date = ref(new Date('2022-01-22'))
+const createdAt = computed(() => {
+   if(props.model && props.model.createdAtText) return new Date(props.model.createdAtText)
+   return null
+})
+
 </script>
 <template>
    <v-row>
-      <v-col cols="4">
+      <v-col v-if="createdAt" cols="4">
          <v-icon icon="mdi-clock" size="xs"></v-icon>
-         <timeago class="font-weight-light bt-item ml-1" :datetime="date" />
+         <timeago class="font-weight-light bt-item ml-1" :datetime="createdAt" />
       </v-col>
       <v-col cols="4">
          <v-icon icon="mdi-eye-circle" size="xs"></v-icon>

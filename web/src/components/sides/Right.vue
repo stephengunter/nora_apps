@@ -28,18 +28,6 @@ function onTagSelected(tag) {
    <div>
       <v-row>
          <v-col>
-            <v-text-field
-               density="compact"
-               variant="solo"
-               label="Search"
-               append-inner-icon="mdi-magnify"
-               single-line
-               hide-details
-            />
-         </v-col>
-      </v-row>
-      <v-row>
-         <v-col>
             <v-img
             src="https://picsum.photos/350/165?random"
             height="125"

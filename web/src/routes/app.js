@@ -9,31 +9,31 @@ const applinks = [{
       order: 0,
       icon: 'mdi-home',
       title: '首頁',
-      type: FOR_ALL,
+      type: USER_ONLY,
       menu: true
    } 
 },{
    name: 'games',
-   path: '/',
+   path: '/games',
    view: 'Games',
    parent: '',
    meta: {
       order: 0,
       icon: 'mdi-puzzle',
       title: '小遊戲',
-      type: FOR_ALL,
+      type: USER_ONLY,
       menu: true
    } 
 },{
    name: 'tools',
-   path: '/',
+   path: '/tools',
    view: 'Tools',
    parent: '',
    meta: {
       order: 0,
       icon: 'mdi-tools',
       title: '工具箱',
-      type: FOR_ALL,
+      type: USER_ONLY,
       menu: true
    } 
 },{
@@ -45,7 +45,7 @@ const applinks = [{
       order: 0,
       icon: '',
       title: '',
-      type: FOR_ALL,
+      type: USER_ONLY,
       menu: false
    } 
 }]

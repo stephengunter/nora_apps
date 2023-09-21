@@ -1,11 +1,15 @@
 <script setup>
 import { MqResponsive } from 'vue3-mq'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { TOGGLE_DRAWER } from '@/store/mutations.type'
 import { SITE_TITLE } from '@/config'
 
 const store = useStore()
+const router = useRouter()
+
+const currentUser = computed(() => store.getters.currentUser)
 
 const title = ref(SITE_TITLE)
 
@@ -15,7 +19,13 @@ function toggleDrawer() {
 
 function home() {
 	console.log('home')
+	
 }
+function logout() {
+	router.push('/')
+	console.log('logout')
+}
+
 </script>
 
 <template>
@@ -25,7 +35,7 @@ function home() {
 		</template>
 		<MqResponsive target="md+">
 			<v-app-bar-title class="pl-0">
-				<a class="text-h5" href="#" @click.prepend="home" style="text-decoration: none; color: black;">
+				<a class="text-h5" href="/" style="text-decoration: none; color: black;">
 					<v-avatar image="@/assets/logo.png" rounded="0" class="me-3">
 					</v-avatar>
 					<span class="text-h5" style="line-height: 1.5rem;">{{ title }}</span>
@@ -34,7 +44,7 @@ function home() {
 		</MqResponsive>
 		<MqResponsive target="sm-">
          <v-app-bar-title>
-				<a href="#" @click.prepend="home" style="text-decoration: none; color: black;">
+				<a href="/" style="text-decoration: none;">
 					<v-avatar image="@/assets/logo.png" rounded="0" class="me-3">
 					</v-avatar>
 				</a>
@@ -48,13 +58,23 @@ function home() {
 			<v-icon>mdi-dots-vertical</v-icon>
 		</v-btn>
 
-		<v-btn icon>
-			<v-avatar>
-				<v-img
-				src="https://cdn.vuetifyjs.com/images/john.jpg"
-				alt="John"
-				></v-img>
-			</v-avatar>
-		</v-btn>
+		
+		<v-menu v-if="currentUser">
+			<template v-slot:activator="{ props }">
+				<v-btn icon v-bind="props">
+					<v-avatar color="red">
+						<span class="text-h5">N</span>
+					</v-avatar>
+				</v-btn>
+			</template>
+			<v-list>
+				<v-list-item min-width="120" max-width="180" @click.prevent="logout">
+					<template v-slot:prepend>
+						<v-icon icon="mdi-logout-variant"></v-icon>
+					</template>
+					<v-list-item-title>登出</v-list-item-title>
+				</v-list-item>
+			</v-list>
+		</v-menu>
 	</v-app-bar>
 </template>

@@ -1,6 +1,7 @@
 import Errors from '@/common/errors'
 import BaseService from '@/common/baseService'
 import JwtService from '@/services/jwt.service'
+import AuthService from '@/services/auth.service'
 import { resolveUserFromClaims, isAdmin } from '@/utils'
 
 import { CHECK_AUTH, LOGIN, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
@@ -30,7 +31,7 @@ const actions = {
    [LOGIN](context, token) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
-         OAuthService.googleLogin(token)
+         AuthService.login({ token })
          .then(model => {
             context.commit(SET_AUTH, {
                token: model.accessToken.token,

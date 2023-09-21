@@ -1,5 +1,17 @@
 <script setup>
+import { reactive, computed, onBeforeMount } from 'vue'
 import { MqResponsive } from 'vue3-mq'
+const props = defineProps({
+   model: {
+		type: Object,
+		default: null
+	}
+})
+const emit = defineEmits(['selected'])
+function select() {
+   console.log('select', props.model.id)
+   emit('selected', props.model.id);
+}
 
 </script>
 <template>
@@ -7,22 +19,22 @@ import { MqResponsive } from 'vue3-mq'
       <MqResponsive target="md+">
          <v-row>
             <v-col cols="4">
-               <a href="#">
+               <a href="#" @click.prevent="select" >
                   <v-img class="mt-1 mb-1" alt="Smiley face" src="https://random.imagecdn.app/300/200" cover />
                </a>
             </v-col>
             <v-col cols="8">
                <v-row class="fill-height" dense>
                   <v-col cols="12">
-                     <a href="#" class="text-h4">
-                        Header
+                     <a href="#" @click.prevent="select" class="text-h6">
+                        {{ model.title }}
                      </a>
                      <div class="text-subtitle-1">
-                        subtitle
+                        {{ model.summary}}
                      </div>
                   </v-col>
                   <v-col cols="12" align-self="end">
-                     <articles-bottom />
+                     <articles-bottom :model="model" />
                   </v-col>
                </v-row>
             </v-col>
@@ -32,21 +44,23 @@ import { MqResponsive } from 'vue3-mq'
          <v-row>
             <v-col>
                <v-card>
-                  <v-img
-                  src="https://picsum.photos/350/165?random"
-                  max-height="125"
-                  cover
-                  class="bg-grey-lighten-2"
-                  >
-                     <v-card-title class="text-white" style="white-space: normal;">
-                        max-height with covermax-height with covermax-height with covermax-height with cover
-                     </v-card-title>
-                  </v-img>
+                  <a href="#" @click.prevent="select" > 
+                     <v-img
+                     src="https://picsum.photos/350/165?random"
+                     max-height="125"
+                     cover
+                     class="bg-grey-lighten-2"
+                     >
+                        <v-card-title class="text-white" style="white-space: normal;">
+                           {{ model.title }}
+                        </v-card-title>
+                     </v-img>
+                  </a>
                   <v-card-text>
-                     subtitlesubtitlesubtitlesubtitlesubtitlesubtitlesubtitlesubtitlesubtitle
+                     {{ model.summary}}
                   </v-card-text>
                   <v-card-actions>
-                     <articles-bottom />
+                     <articles-bottom :model="model" />
                   </v-card-actions>
                </v-card>
             </v-col>
