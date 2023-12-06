@@ -6,14 +6,22 @@ import JwtService from '@/services/jwt.service'
 import { FOR_ALL, GUEST_ONLY } from '@/consts'
 import { APP_CLOSED } from '@/config'
 import { CHECK_AUTH, REFRESH_TOKEN } from '@/store/actions.type'
-import { SET_MENUS } from '@/store/mutations.type'
+import { SET_MENUS, SET_ROUTE } from '@/store/mutations.type'
 import { getMainMenus } from '@/common/menu'
 
 const history = createWebHistory(process.env.BASE_URL)
 const routes = appRoutes.map(item => {
-	return { 
-		...item, 
-		component: () => import(`@/views/${item.view}.vue`)
+	let parts = item.view.split('/')
+	if(parts.length === 2) {
+		return { 
+			...item, 
+			component: () => import(`@/views/${parts[0]}/${parts[1]}.vue`)
+		}
+	}else {
+		return { 
+			...item, 
+			component: () => import(`@/views/${item.view}.vue`)
+		}
 	}
 })
 
@@ -36,14 +44,16 @@ const router = createRouter({
 	history, routes
 })
 
+
 router.beforeEach((to, from, next) => {
 	if(APP_CLOSED && to.name !== 'close') return redirect(next, { name: 'close' })
 	
+	store.commit(SET_ROUTE, { to, from })
+	
 	store.dispatch(CHECK_AUTH).then(auth => {
-		
 		if(to.meta.type === FOR_ALL) return authDone(next, to, auth)
 	
-		if(auth){ 
+		if(auth) { 
 			if(to.meta.type === GUEST_ONLY) return redirect(next, { path: '/' })
 
 			let tokenStatus = JwtService.tokenStatus()
@@ -60,7 +70,10 @@ router.beforeEach((to, from, next) => {
 		}else{
 			//無token
 			if(to.meta.type === GUEST_ONLY) return authDone(next, to, auth)
-			else return redirect(next, { path: '/login' })
+			else {
+				let query = { ...to.query, returnUrl: to.path }
+				return redirect(next, { path: '/login', query })
+			}
 		}
 	})
 })

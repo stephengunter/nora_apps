@@ -1,110 +1,118 @@
-import { API_URL, PHOTO_ACTION_PATH } from '@/config';
-import { isEmptyObject } from './helpers';
+import { API_URL, PHOTO_ACTION_PATH } from '@/config'
+import { isEmptyObject } from './helpers'
+import { ERRORS, WARNING, SUCCESS } from '@/consts'
+
 
 export const scrollToTop = () => {
-   let element = document.getElementById('app');
-   if(!element) return;
+   let element = document.getElementById('app')
+   if(!element) return
 
-   element.scrollIntoView();
+   element.scrollIntoView()
 }
 
 export const resolveErrorData = (error) => {
-   console.log(error);
+   console.log(error)
    if(error) {
-      if(error.status && error.status === 400) return error.data;
+      if(error.status && error.status === 400) return error.data
    }
-   return null; 
+   return null
 }
 
-export const onError = (error) => {
-   console.log(error);
-   Bus.emit('errors');
-}
+export const onError = (error) => Bus.emit(ERRORS, error)
 
-export const activeOptions = () => {
-   return [{
+export const onSuccess = (msg) => Bus.emit(SUCCESS, msg)
+
+export const activeOptions = [{
       value: true,
       text: '上架中'
    },{
       value: false,
       text: '已下架'
-   }];
-}
+   }]
+
+export const statusText = (active) => active ? '上架中' : '已下架'
 
 
 export const buildQuery = (url, params) => {
-   if(!params || isEmptyObject(params)) return url;
-   url += '?';
+   if(!params || isEmptyObject(params)) return url
+   url += '?'
    for (let field in params) {
-      let value = params[field];
-      url += `${field}=${value}&`;
+      let value = params[field]
+      url += `${field}=${value}&`
    }
-   return url.substr(0, url.length - 1);
+   return url.substr(0, url.length - 1)
 }
 
 
 export const photoNameUrl = (name, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}`;
-   let params = { name };
-   if(width) params['width'] = width;
-   if(height) params['height'] = height;
-   if(type) params['type'] = type;
+   let url = `${API_URL}${PHOTO_ACTION_PATH}`
+   let params = { name }
+   if(width) params['width'] = width
+   if(height) params['height'] = height
+   if(type) params['type'] = type
   
-   return buildQuery(url, params);
+   return buildQuery(url, params)
 }
 
 export const photoIdUrl = (id, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}/${id}`;
-   let params = {};
-   if(width) params['width'] = width;
-   if(height) params['height'] = height;
-   if(type) params['type'] = type;
+   let url = `${API_URL}${PHOTO_ACTION_PATH}/${id}`
+   let params = {}
+   if(width) params['width'] = width
+   if(height) params['height'] = height
+   if(type) params['type'] = type
   
-   return buildQuery(url, params);
+   return buildQuery(url, params)
 }
 
-export const hasIntersection = (arrA, arrB) => arrA.some((val) => arrB.indexOf(val) !== -1);
+export const hasIntersection = (arrA, arrB) => arrA.some((val) => arrB.indexOf(val) !== -1)
 
-export const noIntersection = (arrA, arrB) => !hasIntersection(arrA, arrB);
+export const noIntersection = (arrA, arrB) => !hasIntersection(arrA, arrB)
 
-export const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+export const deepClone = (obj) => JSON.parse(JSON.stringify(obj))
+
+export const setValues = (form, model) => {
+   for(const [key, value] of Object.entries(form)) {
+		if(model.hasOwnProperty(key)) {
+			model[key] = value
+		}
+	}
+}
 
 export const uuid = (len = 8, radix = 16) => {
-   let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-   let uuid = [], i;
-   radix = radix || chars.length;
+   let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+   let uuid = [], i
+   radix = radix || chars.length
 
    if (len) {
       // Compact form
-      for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+      for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix]
    }else {
       // rfc4122, version 4 form
-      let r;
+      let r
 
       // rfc4122 requires these characters
-      uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-      uuid[14] = '4';
+      uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-'
+      uuid[14] = '4'
 
       // Fill in random data.  At i==19 set the high bits of clock sequence as
       // per rfc4122, sec. 4.1.5
       for (i = 0; i < 36; i++) {
          if (!uuid[i]) {
-            r = 0 | Math.random()*16;
-            uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+            r = 0 | Math.random()*16
+            uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r]
          }
       }
    }
 
-   return uuid.join('');
+   return uuid.join('')
+
 }
 
 
 
-export * from './users';
-export * from './formats';
-export * from './helpers';
-export * from './subjects';
-export * from './highlights';
-export * from './references';
-export * from './recruits';
-export * from './validators';
+export * from './users'
+export * from './formats'
+export * from './helpers'
+export * from './highlights'
+export * from './validators'
+export * from './emoji'

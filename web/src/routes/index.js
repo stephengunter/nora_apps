@@ -12,11 +12,20 @@ import { getMainMenus } from '@/common/menu'
 
 const history = createWebHistory(import.meta.env.BASE_URL)
 const routes = appRoutes.map(item => {
-	return { 
-		...item, 
-		component: () => import(`@/views/${item.view}.vue`)
+	let parts = item.view.split('/')
+	if(parts.length === 2) {
+		return { 
+			...item, 
+			component: () => import(`@/views/${parts[0]}/${parts[1]}.vue`)
+		}
+	}else {
+		return { 
+			...item, 
+			component: () => import(`@/views/${item.view}.vue`)
+		}
 	}
 })
+
 
 
 const redirect = (next, route) => next(route)

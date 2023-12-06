@@ -1,5 +1,7 @@
 <script setup>
 import { computed } from 'vue'
+import { ERRORS, WARNING, SUCCESS, DIALOG_TITLE, DIALOG_MESSAGE } from '@/consts'
+
 const name = 'CoreConfirmation'
 const props = defineProps({
    type: {
@@ -33,39 +35,47 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['ok', 'cancel'])
+const title_style = computed(() => {
+   if(props.type === ERRORS) return 'bg-red'
+   else if(props.type === WARNING) return 'bg-warning'
+   return ''
+})
+const title_icon = computed(() => {
+   if(props.type === ERRORS) return 'mdi-alert-circle'
+   else if(props.type === WARNING) return 'mdi-alert'
+   return 'mdi-information'
+})
 
-const noAction = computed(() => !props.on_ok && !props.on_cancel)
+const noAction = computed(() => {
+   console.log(props.on_ok)
+   return false
+})//!props.on_ok && !props.on_cancel)
 
 function ok() {
-   if(props.on_ok) props.on_ok();
-   else emit('ok');
+   if(props.on_ok) props.on_ok()
+   else emit('ok')
 }
 function cancel() {
-   if(props.on_cancel) props.on_cancel();
-   else emit('cancel');
+   if(props.on_cancel) props.on_cancel()
+   else emit('cancel')
 }
 
 </script>
 <template>
-   <v-card >
-      <v-card-title v-if="type === 'error'" class="bg-red text-h5">
-         <v-icon color="white" class="mr-3">
-            mdi-alert-circle
-         </v-icon>
-         <span style="color: #fff;">
-            {{ title  }}
-         </span>
-      </v-card-title>
-      <v-card-title v-else v-show="title">
-         <h3>{{ title }}</h3>
+   <v-card>
+      <v-card-title :class="title_style">
+         <v-icon class="mb-1" :icon="title_icon" />
+         {{ title  }}
       </v-card-title>
       <slot>
          <v-card-text v-if="text">
-         {{ text }}
+            <p>
+               {{ text }}
+            </p>
          </v-card-text>
       </slot>
-      <v-card-actions v-show="!noAction" style="min-height: 75px;">
-         <v-spacer></v-spacer>
+      <v-card-actions v-show="!noAction">
+         <v-spacer />
          <v-btn text @click="cancel">
             {{ cancel_text }}
          </v-btn>

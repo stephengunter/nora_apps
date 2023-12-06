@@ -1,24 +1,20 @@
 <script setup>
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { SET_DRAWER } from '@/store/mutations.type'
 import { SITE_TITLE } from '@/config'
 
 const name = 'LayoutDrawer'
 const store = useStore()
-const route = useRoute()
-const router = useRouter()
+const location = useRoute()
 
 const title = ref(SITE_TITLE)
 const data = reactive({
-   open: [],
-   selected: null
+   open: []
 })
 
-const menus = computed(() => store.getters.menus);
-
-watch(route, setSelected)
+const menus = computed(() => store.getters.menus)
 
 const drawer = computed({
 	get() {
@@ -29,24 +25,12 @@ const drawer = computed({
 	}
 })
 
-onBeforeMount(() => {
-   setSelected(route)
-})
-
 function isActive(item) {
-   if(data.selected) {
-      return item.name === data.selected.name
+   if(location) {
+      if(location.name === item.name) return true
+      if(item.meta.children && item.meta.children.includes(location.name)) return true
    }
-}
-function onSeleted(item) {
-   data.selected = item
-   router.push({ path: item.path});
-}
-
-function setSelected(newRoute) {
-   if(newRoute.name) {
-      data.selected = menus.value.find(x => x.name === newRoute.name)
-   }
+   return false
 }
 
 </script>
@@ -71,7 +55,7 @@ function setSelected(newRoute) {
 
       <v-list v-model:opened="data.open">
          <MenuDrawer  v-for="item in menus" :key="item.name" 
-         :item="item" :active="isActive(item)" @select="onSeleted" 
+         :item="item" :active="isActive(item)"
          />
       </v-list>   
       

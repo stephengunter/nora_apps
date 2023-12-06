@@ -1,3 +1,26 @@
+<script setup>
+const name = 'ButtonCreate'
+const props = defineProps({
+   tooltip: {
+      type: String,
+      default: '新增'
+   },
+   disabled: {
+      type: Boolean,
+      default: false
+   },
+   class_name: {
+      type: String,
+      default: ''
+   }
+})
+const emit = defineEmits(['create'])
+
+
+function create() {
+	emit('create')
+}
+</script>
 <template>
    <v-tooltip v-if="tooltip" top>
       <template v-slot:activator="{ on, attrs }">
@@ -16,7 +39,7 @@
    </v-btn>
   
 </template>
-
+<!-- 
 <script>
 export default {
    name: 'ButtonCreate',
@@ -44,4 +67,4 @@ export default {
 
 <style>
 
-</style>
+</style> -->

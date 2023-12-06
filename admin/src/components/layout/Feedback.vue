@@ -3,7 +3,9 @@ import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { CHECK_AUTH, REFRESH_TOKEN } from '@/store/actions.type'
-import { LOGIN } from '@/store/actions.type'
+import { LOGIN, RE_LOGIN, SHOW_CONFIRM } from '@/store/actions.type'
+import { DIALOG_MAX_WIDTH } from '@/config'
+import { ERRORS, WARNING, SUCCESS, ICONS, DIALOG_TITLE, DIALOG_MESSAGE } from '@/consts'
 
 
 const name = 'LayoutFeedBack'
@@ -13,8 +15,8 @@ const router = useRouter()
 
 const data = reactive({
    success: {
-		color: 'success',
-		icon: 'mdi-check-circle',
+		color: SUCCESS,
+		icon: ICONS[SUCCESS],
 		show: false,
 		timeout: 1500,
 		msg: '存檔成功'
@@ -24,8 +26,7 @@ const data = reactive({
 		title: '',
 		text: '',
 		active: false,
-		action: '',
-		maxWidth: 420,
+		maxWidth: DIALOG_MAX_WIDTH,
 		ok_text: '確定',
 		cancel_text: '取消',
 		on_ok: null,
@@ -42,13 +43,14 @@ const confirmNoAction = computed(() => {
  
 function onError(error) {
 	let confirm = {
-		type: 'error',
-		title: '伺服器暫時無回應，請稍候再試.',
-		text: ''
+		type: ERRORS,
+		title: DIALOG_TITLE[ERRORS],
+		text: DIALOG_MESSAGE[ERRORS]
 	}
 	if(error) {
-		confirm.title = error.title ? error.title : '伺服器暫時無回應，請稍候再試.'
-		confirm.text = error.text ? error.text : ''
+		console.log(error)
+		if(error.title) confirm.title = error.title
+		if(error.text) confirm.text = error.text
 		
 		let status = error.status
 		errorHandler(status, confirm)
@@ -101,14 +103,15 @@ function redirect(name, returnUrl) {
 }
 
 function onSuccess(msg) {
-	data.success.icon = 'mdi-check-circle'
-	data.success.color = 'success'
+	console.log('onSuccess', msg)
+	data.success.icon = ICONS[SUCCESS]
+	data.success.color = SUCCESS
 	data.success.msg = msg ? msg : '存檔成功'
 	data.success.show = true
 }
 function onWarning(msg){
-	data.success.icon = 'mdi-alert-circle'
-	data.success.color = 'warning'
+	data.success.icon = ICONS[WARNING]
+	data.success.color = WARNING
 	data.success.msg = msg
 	data.success.show = true
 }
@@ -118,7 +121,7 @@ function showConfirm({type, title, text, ok ='確定', cancel = '取消', onOk =
 		type,
 		title,
 		text,
-		maxWidth: maxWidth ? maxWidth : 420,
+		maxWidth: maxWidth ? maxWidth : DIALOG_MAX_WIDTH,
 		ok_text: ok,
 		cancel_text: cancel,
 		active: true,
@@ -133,18 +136,18 @@ function hideConfirm() {
 		text: '',
 		ok_text: '確定',
 		cancel_text: '取消',
-		maxWidth: 420,
+		maxWidth: DIALOG_MAX_WIDTH,
 		active: false,
 		on_ok: null,
 		on_cancel: null
 	}
 }
 
-Bus.on('errors', onError)
-Bus.on('success', onSuccess)
-Bus.on('warning', onWarning)
-Bus.on('show-confirm', showConfirm)
-Bus.on('re-login', reLogin)
+Bus.on(ERRORS, onError)
+Bus.on(SUCCESS, onSuccess)
+Bus.on(WARNING, onWarning)
+Bus.on(SHOW_CONFIRM, showConfirm)
+Bus.on(RE_LOGIN, reLogin)
 
 </script>
 <template>
@@ -154,13 +157,11 @@ Bus.on('re-login', reLogin)
 
 		<LayoutShow />
 
-		<v-snackbar :timeout="data.success.timeout" top right dark
-			:color="data.success.color" v-model="data.success.show"
+		<v-snackbar :timeout="data.success.timeout" 
+		:color="data.success.color" v-model="data.success.show"
 		>
-			<v-icon color="white" >
-			{{ data.success.icon }}
-			</v-icon>
-			<span class="ml-3" style="font-size:1.2rem vertical-align: middle">
+			<v-icon :icon="data.success.icon" color="white" />
+			<span class="ml-3">
 				{{ data.success.msg  }}
 			</span>
 		</v-snackbar>

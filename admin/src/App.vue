@@ -15,8 +15,3 @@ const name = 'App'
 		
 	</v-app>
 </template>
-
-
-<style lang="scss">
-	@import "assets/styles/app.scss"
-</style>

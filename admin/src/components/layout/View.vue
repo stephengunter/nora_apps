@@ -1,8 +1,8 @@
 
 <template>
    <v-main id="layout-view">
-      <core-container>
+      <CoreContainer>
          <router-view />
-      </core-container>
+      </CoreContainer>
    </v-main>
 </template>

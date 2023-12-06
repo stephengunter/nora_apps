@@ -37,13 +37,11 @@ function onGoogleLoginSuccess(token) {
    .catch(error => onError({ msg: '登入失敗' }))
 }
 function onSuccess() {
-   console.log('onSuccess')
-   console.log('returnUrl', returnUrl)
-   // if(returnUrl) {
-   //    if(returnQuery) router.push({ path: returnUrl, query: returnQuery })
-   //    else router.push({ path: returnUrl })
-   // } 
-   // else router.push({ path: '/' })
+   if(data.returnUrl) {
+      if(data.returnQuery) router.push({ path: data.returnUrl, query: data.returnQuery })
+      else router.push({ path: data.returnUrl })
+   } 
+   else router.push({ path: '/' })
 }
 </script>
 
