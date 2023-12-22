@@ -157,7 +157,7 @@ Bus.on(RE_LOGIN, reLogin)
 
 		<LayoutShow />
 
-		<v-snackbar :timeout="data.success.timeout" 
+		<v-snackbar :timeout="data.success.timeout"
 		:color="data.success.color" v-model="data.success.show"
 		>
 			<v-icon :icon="data.success.icon" color="white" />

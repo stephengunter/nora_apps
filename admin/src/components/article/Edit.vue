@@ -55,6 +55,13 @@ function onSubmit() {
 	v$.value.$validate().then(valid => {
 		if(!valid) return
 		if(tiptap.value.isEmpty()) {
+			
+			// const errors = {
+			// 	password: ['Error Msg']
+			// }
+			// $externalResults.value = errors
+
+			//v$.value.$clearExternalResults()
 			data.errors.content = true
 			return
 		}
