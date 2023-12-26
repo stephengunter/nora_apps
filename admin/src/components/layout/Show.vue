@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useStore } from 'vuex'
 import { SHOW_PHOTO } from '@/store/actions.type'
 import { DIALOG_MAX_WIDTH } from '@/config'
-import { onError } from '@/utils'
+import { onErrors } from '@/utils'
 
 const name = 'LayoutShow'
 const store = useStore()

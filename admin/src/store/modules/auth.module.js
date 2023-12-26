@@ -3,20 +3,14 @@ import BaseService from '@/common/baseService'
 import AuthService from '@/services/auth.service'
 import OAuthService from '@/services/oAuth.service'
 import JwtService from '@/services/jwt.service'
-import { resolveUserFromClaims, isAdmin } from '@/utils'
+import { resolveUserFromClaims, isAdmin, isEmptyObject } from '@/utils'
 
-import { CHECK_AUTH, LOGIN, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
-
-
-import { 
-   SET_AUTH, PURGE_AUTH, SET_USER,  SET_ERROR, CLEAR_ERROR, SET_LOADING
-} from '@/store/mutations.type'
+import { CHECK_AUTH, LOGIN, LOGIN_BY_GOOGLE, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
+import { SET_AUTH, PURGE_AUTH, SET_USER, SET_LOADING } from '@/store/mutations.type'
 
  
 const state = {
-   errors: new Errors(),
-   user: {},
-   isAuthenticated: !!JwtService.getToken()
+   user: {}
 }
 
 const getters = {
@@ -24,12 +18,31 @@ const getters = {
      return state.user
    },
    isAuthenticated(state) {
-     return state.isAuthenticated
+     return !isEmptyObject(state.user)
    }
 }
 
 const actions = {
-   [LOGIN](context, token) {
+   [LOGIN](context, form) {
+      context.commit(SET_LOADING, true)
+      return new Promise((resolve, reject) => {
+         AuthService.login(form)
+         .then(model => {
+            context.commit(SET_AUTH, {
+               token: model.accessToken.token,
+               refreshToken: model.refreshToken
+            }) 
+            resolve()
+         })
+         .catch(error => {
+            reject(error)
+         })
+         .finally(() => { 
+            context.commit(SET_LOADING, false)
+         })
+      })     
+   }
+   ,[LOGIN_BY_GOOGLE](context, token) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          OAuthService.googleLogin(token)
@@ -107,25 +120,14 @@ const actions = {
 
 
 const mutations = {
-   [SET_ERROR](state, errors) {
-      state.errors.record(errors)
-   },
-   [CLEAR_ERROR](state) {
-      state.errors.clear()   
-   },
    [SET_USER](state, user) {
       state.user = user
    },
    [SET_AUTH](state, model) {
-      
       JwtService.saveToken(model.token, model.refreshToken)
       let claims = JwtService.resolveClaims(model.token)
       let user = resolveUserFromClaims(claims)
       state.user = user
-
-      state.isAuthenticated = true
-      state.errors = new Errors()
-      
    },
    [PURGE_AUTH](state) {
       state.isAuthenticated = false

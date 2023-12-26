@@ -1,13 +1,15 @@
-export const CHECK_AUTH = 'checkAuth'
-export const REFRESH_TOKEN = 'refreshToken'
 
-export const LOGIN = 'login'
-export const LOGOUT = 'logout'
-export const RE_LOGIN = 'reLogin'
 export const GET_MENUS = 'getMenus'
 export const SHOW_PHOTO = 'showPhoto'
 export const SHOW_CONFIRM = 'showConfirm'
 
+//Auth
+export const LOGIN = 'login'
+export const LOGIN_BY_GOOGLE = 'loginByGoogle'
+export const LOGOUT = 'logout'
+export const RE_LOGIN = 'reLogin'
+export const CHECK_AUTH = 'checkAuth'
+export const REFRESH_TOKEN = 'refreshToken'
 
 //AppAdmin
 export const FETCH_EXCEPTIONS = 'fetchExceptions'

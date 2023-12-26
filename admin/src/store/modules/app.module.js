@@ -8,7 +8,7 @@ const initialState = {
    loading: false,
    drawer: true,
    menus: [],
-   errorList: new Errors(),
+   errors: new Errors(),
    route: null
 }
 
@@ -28,12 +28,8 @@ const getters = {
    menus(state) {
       return state.menus
    },
-   contentMaxWidth(state) {
-      if(state.responsive) return state.windowWidth * 0.9
-      return (state.windowWidth - state.sideBarWidth) * 0.9
-   },
-   errorList(state) {
-      return state.errorList
+   errors(state) {
+      return state.errors
    }
 }
 
@@ -56,10 +52,10 @@ const mutations = {
       state.menus = menus
    },
    [SET_ERROR](state, errors) {
-      state.errorList.record(errors)
+      state.errors.record(errors)
    },
    [CLEAR_ERROR](state) {
-      state.errorList.clear()   
+      state.errors.clear()   
    },
    [SET_ROUTE](state, model) {
       state.route = model

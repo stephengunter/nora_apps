@@ -4,7 +4,7 @@ import { useStore } from 'vuex'
 
 const name = 'ErrorList'
 const store = useStore()
-const errors = computed(() => store.getters.errorList)
+const errors = computed(() => store.getters.errors)
 </script>
 
 <template>

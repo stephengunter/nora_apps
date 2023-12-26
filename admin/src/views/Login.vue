@@ -5,11 +5,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { LOGIN } from '@/store/actions.type'
-import { SET_ERROR, CLEAR_ERROR, 
-   
-} from '@/store/mutations.type'
+import { SET_ERROR, CLEAR_ERROR } from '@/store/mutations.type'   
+
 import { ERRORS, WARNING, SUCCESS } from '@/consts'
-import { onError } from '@/utils'
+import { resolveErrorData, onErrors, onWarning } from '@/utils'
 
 const name = 'LoginView'
 const store = useStore()
@@ -20,20 +19,23 @@ const initialState = {
    returnUrl: '',
    returnQuery: '',
    form: {
-      email: '',
+      username: '',
       password: ''
+   },
+   password:{
+      visible: false
    }
 }
 const state = reactive({
    ...initialState,
 })
 const labels = {
-	'email':'Email',
+	'username':'Email',
 	'password':'Password'
 }
 
 const rules = {
-   email: { required, email },
+   username: { required, email },
    password: { required }
 }
 const $externalResults = ref({})
@@ -51,14 +53,18 @@ onBeforeMount(() => {
 function onSubmit() {
 	v$.value.$validate().then(valid => {
       if(!valid) return
-      Bus.emit(SUCCESS, 'Login Success.')
-      
+      store.dispatch(LOGIN, state.form)
+      .then(data => {
+         console.log(data)
+      })
+      .catch(error => onLoginError(error))
 	})
 }
 function onLoginFailed() {
-   store.commit(SET_ERROR, {
+   onError({
       'login': ['Logon Failed.']
    })
+  
 }
 
 //#region google
@@ -66,22 +72,30 @@ function callback(data) {
    if(data.credential) {
       onGoogleLoginSuccess(data.credential)
    } else {
-      onError({ msg: '登入失敗' })
+      onError({ title: '登入失敗', text: 'damn' })
    }
 }
 function onGoogleLoginSuccess(token) {
    store.dispatch(LOGIN, token)
-   .then(onSuccess)
-   .catch(error => onError({ msg: '登入失敗' }))
+   .then(onLoginSuccess)
+   .catch(error => {
+      console.log(error)
+   })
 }
-function onSuccess() {
+
+//#endregion
+function onLoginError(error) {
+   let errors = resolveErrorData(error)
+   if(errors) store.commit(SET_ERROR, Object.values(error)[0])
+   else onErrors()
+}
+function onLoginSuccess() {
    if(state.returnUrl) {
       if(state.returnQuery) router.push({ path: state.returnUrl, query: state.returnQuery })
       else router.push({ path: state.returnUrl })
    } 
    else router.push({ path: '/' })
 }
-//#endregion
 function onInputChanged()
 {
    store.commit(CLEAR_ERROR)
@@ -91,7 +105,7 @@ function onInputChanged()
 
 <template>
    <CoreContainer>
-      <v-card>
+      <v-card max-width="448" >
          <v-card-title class="font-weight-black">
             <h2 style="margin:8px">登入</h2>            
          </v-card-title>
@@ -99,20 +113,32 @@ function onInputChanged()
             <form @submit.prevent="onSubmit" @input="onInputChanged">
                <v-row>
                   <v-col cols="12">
-                     <v-text-field
-                     v-model="state.form.email"
-                     :error-messages="v$.email.$errors.map(e => e.$message)"
-                     :label="labels['email']"
-                     @input="v$.email.$touch"
-                     @blur="v$.email.$touch"
+                     <v-text-field variant="outlined" prepend-inner-icon="mdi-email-outline"
+                     v-model="state.form.username"
+                     :error-messages="v$.username.$errors.map(e => e.$message)"
+                     :label="labels['username']"
+                     @input="v$.username.$touch"
+                     @blur="v$.username.$touch"
                      />
-                     <v-text-field
+                     <!-- <v-text-field 
+                     :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
+                     :type="state.password.visible ? 'text' : 'password'"
                      v-model="state.form.password"
                      :error-messages="v$.password.$errors.map(e => e.$message)"
                      :label="labels['password']"
                      @input="v$.password.$touch"
                      @blur="v$.password.$touch"
-                     />
+                     @click:append-inner="state.password.visible = !state.password.visible"
+                     /> -->
+                     <v-text-field
+        :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="state.password.visible ? 'text' : 'password'"
+        density="compact"
+        placeholder="Enter your password"
+        prepend-inner-icon="mdi-lock-outline"
+        variant="outlined"
+        @click:append-inner="state.password.visible = !state.password.visible"
+      ></v-text-field>
 
                   </v-col>
                   <v-col cols="12">

@@ -11,16 +11,17 @@ export const scrollToTop = () => {
 }
 
 export const resolveErrorData = (error) => {
-   console.log(error)
    if(error) {
       if(error.status && error.status === 400) return error.data
    }
    return null
 }
 
-export const onError = (error) => Bus.emit(ERRORS, error)
+export const onErrors = (error) => Bus.emit(ERRORS, error)
 
 export const onSuccess = (msg) => Bus.emit(SUCCESS, msg)
+
+export const onWarning = (msg) => Bus.emit(WARNING, msg)
 
 export const activeOptions = [{
       value: true,
