@@ -11,7 +11,7 @@ function save() {
 const tiptap = ref(null)
 
 onMounted(() => {
-	console.log(tiptap.value);
+	//console.log(tiptap.value);
 })
 </script>
 

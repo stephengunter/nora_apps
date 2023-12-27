@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { TOGGLE_DRAWER } from '@/store/mutations.type';
 
@@ -10,6 +10,8 @@ const store = useStore()
 
 const currentUser = computed(() => store.getters.currentUser)
 const isAuthenticated = computed(() => store.getters.isAuthenticated)
+
+
 function toggleDrawer() {
    store.commit(TOGGLE_DRAWER)
 }
@@ -21,6 +23,6 @@ function toggleDrawer() {
       v-text="route.meta.title"
       />
       <v-spacer />
-      <MenuUser v-if="true" :user="currentUser" />
+      <MenuUser v-if="isAuthenticated" :user="currentUser" />
    </v-app-bar>
 </template>

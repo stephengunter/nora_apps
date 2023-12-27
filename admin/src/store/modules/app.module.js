@@ -1,5 +1,5 @@
 import Errors from '@/common/errors'
-import { SET_BREAD_ITEMS, SET_LOADING, SET_ERROR, CLEAR_ERROR, 
+import { SET_BREAD_ITEMS, SET_LOADING, SET_ERRORS, CLEAR_ERRORS, 
    SET_DRAWER, SET_MENUS, TOGGLE_DRAWER, SET_ROUTE
 } from '@/store/mutations.type'
 
@@ -51,10 +51,11 @@ const mutations = {
    [SET_MENUS](state, menus) {
       state.menus = menus
    },
-   [SET_ERROR](state, errors) {
+   [SET_ERRORS](state, errors) {
+      console.log(errors)
       state.errors.record(errors)
    },
-   [CLEAR_ERROR](state) {
+   [CLEAR_ERRORS](state) {
       state.errors.clear()   
    },
    [SET_ROUTE](state, model) {

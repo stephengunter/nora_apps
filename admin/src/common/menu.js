@@ -1,12 +1,12 @@
-import { GUEST_ONLY, ADMIN_ONLY } from '@/consts';
-import appRoutes from '@/routes/app';
+import { ROUTE_TYPES } from '@/consts'
+import appRoutes from '@/routes/app'
 
 export const getMainMenus = (currentRoute, auth) => {
    let routes = [];
    if(auth) {
-      routes = appRoutes.filter(item => item.meta.type !== GUEST_ONLY);
+      routes = appRoutes.filter(item => item.meta.type !== ROUTE_TYPES.GUEST_ONLY);
    }else {
-      routes = appRoutes.filter(item => item.meta.type !== ADMIN_ONLY);
+      routes = appRoutes.filter(item => item.meta.type !== ROUTE_TYPES.ADMIN_ONLY);
    }
    
    let mainLinks = getMainLinks(routes);

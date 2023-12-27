@@ -16,8 +16,8 @@ import store from '@/store'
 export const registerPlugins = (app) => {
 	app.use(vuetify)
 		.use(Vue3Mq, {
-				preset: 'vuetify'
-			})
+			preset: 'vuetify'
+		})
 		.use(vue3GoogleLogin, {
 			clientId: GOOGLE_AUTH_PARAMS.client_id
 		})

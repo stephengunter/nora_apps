@@ -15,8 +15,8 @@ export const SET_USER = 'setUser'
 
 export const SET_ROUTE = 'setRoute'
 
-export const SET_ERROR = 'setError'
-export const CLEAR_ERROR = 'clearError'
+export const SET_ERRORS = 'setErrors'
+export const CLEAR_ERRORS = 'clearErrors'
 
 //Exceptions
 export const SET_EXCEPTIONS = 'setExceptions'

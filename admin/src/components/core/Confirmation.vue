@@ -22,7 +22,7 @@ const props = defineProps({
    },
    cancel_text: {
       type: String,
-      default: '取消'
+      default: ''
    },
    on_ok: {
       type: Function,
@@ -47,7 +47,6 @@ const title_icon = computed(() => {
 })
 
 const noAction = computed(() => {
-   console.log(props.on_ok)
    return false
 })//!props.on_ok && !props.on_cancel)
 
@@ -76,7 +75,7 @@ function cancel() {
       </slot>
       <v-card-actions v-show="!noAction">
          <v-spacer />
-         <v-btn text @click="cancel">
+         <v-btn v-show="cancel_text" text @click="cancel">
             {{ cancel_text }}
          </v-btn>
          <v-btn color="green darken-1" text @click="ok">

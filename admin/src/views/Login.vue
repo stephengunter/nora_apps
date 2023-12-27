@@ -5,9 +5,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useVuelidate } from '@vuelidate/core'
 import { email, required } from '@vuelidate/validators'
 import { LOGIN } from '@/store/actions.type'
-import { SET_ERROR, CLEAR_ERROR } from '@/store/mutations.type'   
-
-import { ERRORS, WARNING, SUCCESS } from '@/consts'
+import { SET_ERRORS, CLEAR_ERRORS } from '@/store/mutations.type'   
+import { DIALOG_MAX_WIDTH } from '@/config'
 import { resolveErrorData, onErrors, onWarning } from '@/utils'
 
 const name = 'LoginView'
@@ -42,6 +41,8 @@ const $externalResults = ref({})
 const v$ = useVuelidate(rules, state.form, { $externalResults })
 
 onBeforeMount(() => {
+   const data = {'': ['Login Failed.']}
+   console.log(Object.values(data)[0])
 	if(route.query) {
       state.returnUrl = route.query.returnUrl ? route.query.returnUrl : ''
       let copy = JSON.parse(JSON.stringify(route.query))
@@ -54,17 +55,9 @@ function onSubmit() {
 	v$.value.$validate().then(valid => {
       if(!valid) return
       store.dispatch(LOGIN, state.form)
-      .then(data => {
-         console.log(data)
-      })
+      .then(onLoginSuccess)
       .catch(error => onLoginError(error))
 	})
-}
-function onLoginFailed() {
-   onError({
-      'login': ['Logon Failed.']
-   })
-  
 }
 
 //#region google
@@ -86,8 +79,8 @@ function onGoogleLoginSuccess(token) {
 //#endregion
 function onLoginError(error) {
    let errors = resolveErrorData(error)
-   if(errors) store.commit(SET_ERROR, Object.values(error)[0])
-   else onErrors()
+   if(errors) store.commit(SET_ERRORS, Object.values(errors))
+   else onErrors(error)
 }
 function onLoginSuccess() {
    if(state.returnUrl) {
@@ -98,14 +91,14 @@ function onLoginSuccess() {
 }
 function onInputChanged()
 {
-   store.commit(CLEAR_ERROR)
+   store.commit(CLEAR_ERRORS)
 }
 </script>
 
 
 <template>
    <CoreContainer>
-      <v-card max-width="448" >
+      <v-card :max-width="DIALOG_MAX_WIDTH" >
          <v-card-title class="font-weight-black">
             <h2 style="margin:8px">登入</h2>            
          </v-card-title>
@@ -114,31 +107,21 @@ function onInputChanged()
                <v-row>
                   <v-col cols="12">
                      <v-text-field variant="outlined" prepend-inner-icon="mdi-email-outline"
+                     density="compact" placeholder="Enter your email"                     
                      v-model="state.form.username"
-                     :error-messages="v$.username.$errors.map(e => e.$message)"
-                     :label="labels['username']"
+                     :error-messages="v$.username.$errors.map(e => e.$message)"                     
                      @input="v$.username.$touch"
                      @blur="v$.username.$touch"
                      />
-                     <!-- <v-text-field 
+                     <v-text-field variant="outlined" prepend-inner-icon="mdi-lock-outline"
+                     density="compact" placeholder="Enter your password"
                      :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
                      :type="state.password.visible ? 'text' : 'password'"
                      v-model="state.form.password"
-                     :error-messages="v$.password.$errors.map(e => e.$message)"
-                     :label="labels['password']"
                      @input="v$.password.$touch"
                      @blur="v$.password.$touch"
                      @click:append-inner="state.password.visible = !state.password.visible"
-                     /> -->
-                     <v-text-field
-        :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
-        :type="state.password.visible ? 'text' : 'password'"
-        density="compact"
-        placeholder="Enter your password"
-        prepend-inner-icon="mdi-lock-outline"
-        variant="outlined"
-        @click:append-inner="state.password.visible = !state.password.visible"
-      ></v-text-field>
+                     />
 
                   </v-col>
                   <v-col cols="12">
@@ -147,8 +130,8 @@ function onInputChanged()
                      </v-btn>
                   </v-col> 
                   <v-col cols="12">
-                  <CoreErrorList />
-               </v-col>  
+                     <CoreErrorList />
+                  </v-col>  
                </v-row>
             </form>
             

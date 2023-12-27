@@ -45,6 +45,10 @@ export const FETCH_USERS = 'fetchUsers'
 export const USER_DETAILS = 'userDetails'
 export const ADD_USER_PASSWORD = 'addUserPassword'
 
+//Profiles
+export const GET_PROFILES = 'getProfiles'
+export const UPDATE_PROFILES = 'updateProfiles'
+
 //Medias
 export const INIT_MEDIAS = 'initMedias'
 export const ADD_MEDIA = 'addMedia'

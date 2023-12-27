@@ -23,7 +23,6 @@ watch(route, init)
 onMounted(init)
 
 function init() {
-	
 	fetchData(route.params.id ? route.params.id : 0)
 }
 

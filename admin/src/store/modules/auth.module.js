@@ -22,6 +22,11 @@ const getters = {
    }
 }
 
+const defaultError = {
+   status: 400,
+   data: {'': ['身分驗證失敗, 請重新登入.']}
+}
+
 const actions = {
    [LOGIN](context, form) {
       context.commit(SET_LOADING, true)
@@ -29,36 +34,38 @@ const actions = {
          AuthService.login(form)
          .then(model => {
             context.commit(SET_AUTH, {
-               token: model.accessToken.token,
+               token: model.token,
                refreshToken: model.refreshToken
             }) 
-            resolve()
+            context.dispatch(CHECK_AUTH)
+            .then(result => {
+               if(result) resolve() //is admin
+               else reject(defaultError)
+            })
+            .catch(() => reject(defaultError))            
          })
-         .catch(error => {
-            reject(error)
-         })
-         .finally(() => { 
-            context.commit(SET_LOADING, false)
-         })
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })     
-   }
-   ,[LOGIN_BY_GOOGLE](context, token) {
+   },
+   [LOGIN_BY_GOOGLE](context, token) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          OAuthService.googleLogin(token)
          .then(model => {
             context.commit(SET_AUTH, {
-               token: model.accessToken.token,
+               token: model.token,
                refreshToken: model.refreshToken
-            }) 
-            resolve(null)
+            })  
+            context.dispatch(CHECK_AUTH)
+            .then(result => {
+               if(result) resolve() //is admin
+               else reject(defaultError)
+            })
+            .catch(() => reject(defaultError))
          })
-         .catch(error => {
-            reject(error)
-         })
-         .finally(() => { 
-            context.commit(SET_LOADING, false)
-         })
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })     
    },
    [LOGOUT](context) {
@@ -70,6 +77,7 @@ const actions = {
       }) 
    },
    [CHECK_AUTH](context) {
+      console.log(CHECK_AUTH)
       return new Promise((resolve) => {
          let token = JwtService.getToken()         
          if(token) {
@@ -123,9 +131,10 @@ const mutations = {
    [SET_USER](state, user) {
       state.user = user
    },
-   [SET_AUTH](state, model) {
-      JwtService.saveToken(model.token, model.refreshToken)
-      let claims = JwtService.resolveClaims(model.token)
+   [SET_AUTH](state, { token, refreshToken }) {
+      JwtService.saveToken(token, refreshToken)
+      let claims = JwtService.resolveClaims(token)
+     
       let user = resolveUserFromClaims(claims)
       state.user = user
    },

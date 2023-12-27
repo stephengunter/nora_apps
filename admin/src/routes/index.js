@@ -3,7 +3,7 @@ import appRoutes from './app'
 import store from '@/store'
 
 import JwtService from '@/services/jwt.service'
-import { FOR_ALL, GUEST_ONLY } from '@/consts'
+import { ROUTE_TYPES } from '@/consts'
 import { APP_CLOSED } from '@/config'
 import { CHECK_AUTH, REFRESH_TOKEN } from '@/store/actions.type'
 import { SET_MENUS, SET_ROUTE } from '@/store/mutations.type'
@@ -51,10 +51,10 @@ router.beforeEach((to, from, next) => {
 	store.commit(SET_ROUTE, { to, from })
 	
 	store.dispatch(CHECK_AUTH).then(auth => {
-		if(to.meta.type === FOR_ALL) return authDone(next, to, auth)
+		if(to.meta.type === ROUTE_TYPES.FOR_ALL) return authDone(next, to, auth)
 	
 		if(auth) { 
-			if(to.meta.type === GUEST_ONLY) return redirect(next, { path: '/' })
+			if(to.meta.type === ROUTE_TYPES.GUEST_ONLY) return redirect(next, { path: '/' })
 
 			let tokenStatus = JwtService.tokenStatus()
 			if(tokenStatus === -1) {
@@ -69,7 +69,7 @@ router.beforeEach((to, from, next) => {
 			
 		}else{
 			//無token
-			if(to.meta.type === GUEST_ONLY) return authDone(next, to, auth)
+			if(to.meta.type === ROUTE_TYPES.GUEST_ONLY) return authDone(next, to, auth)
 			else {
 				let query = { ...to.query, returnUrl: to.path }
 				return redirect(next, { path: '/login', query })

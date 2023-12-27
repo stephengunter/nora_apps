@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import { DIALOG_MAX_WIDTH } from '@/config'
+import { resolveErrorData, onErrors, onWarning } from '@/utils'
 
 const data = reactive({
 	image: {
@@ -9,12 +10,13 @@ const data = reactive({
 })
   
 function image(val) {
-	data.image.active = val
+	onErrors()
+	//data.image.active = val
 }
 
 function onImageSelected(model) {
-	console.log(model)
-	image(false)
+	
+	//image(false)
 }
 </script>
 
