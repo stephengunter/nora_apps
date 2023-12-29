@@ -1,82 +1,94 @@
 <script setup>
-import { ref, reactive, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { useVuelidate } from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
-import { LOGIN } from '@/store/actions.type'
-import { SET_ERROR, CLEAR_ERROR } from '@/store/mutations.type'  
+import { GET_PROFILES, UPDATE_PROFILES, SHOW_CONFIRM, HIDE_CONFIRM, LOGOUT } from '@/store/actions.type'
+import { SET_ERRORS } from '@/store/mutations.type'
+import { setValues, resolveErrorData, onErrors, onSuccess } from '@/utils'
+import { DIALOG_MAX_WIDTH } from '@/config'
 
 const name = 'ProfilesView'
 const store = useStore()
-
+const router = useRouter()
 
 const initialState = {
-   form: {
-      name: '',
-      phone: ''
+   model: null,
+   password: {
+      active: false
    }
 }
 const state = reactive({
    ...initialState,
 })
-const labels = {
-	'name':'Name',
-	'phone':'Phone'
+const form = ref({})
+
+onMounted(init)
+
+function init() {
+	store.dispatch(GET_PROFILES, store.getters.currentUser.id)
+   .then(model => {
+      state.model = model
+      nextTick(() => form.value.init())
+   })
+	.catch(error => onErrors(error))
+}
+function onSubmit(form) {
+   setValues(form, state.model)
+   store.dispatch(UPDATE_PROFILES, state.model)
+      .then(() => onUpdated('個人資料更新成功'))
+      .catch(error => {
+         let errors = resolveErrorData(error)
+         if(errors) store.commit(SET_ERRORS, Object.values(errors))
+         else onErrors(error)
+      })
+}
+function onUpdated(msg) {
+	onSuccess(msg)
+
+	Bus.emit(SHOW_CONFIRM, {
+		type: '',
+		title: msg + ' , 請重新登入',
+		text: '',
+		onOk: () => {
+			Bus.emit(HIDE_CONFIRM)
+			store.dispatch(LOGOUT)
+   		.then(() => router.push({ name: 'login' }))
+		}
+	})
 }
 
-const rules = {
-   name: { required },
-   phone: { required }
-}
-const $externalResults = ref({})
-const v$ = useVuelidate(rules, state.form, { $externalResults })
-
-
-onBeforeMount(() => {
-	console.log('onBeforeMount')
-})
-
-function onInputChanged()
-{
-   store.commit(CLEAR_ERROR)
-}
 
 </script>
 <template>
    <CoreContainer>
-      <v-card>
-         <v-card-title class="font-weight-black">
-            <h2 style="margin:8px">Profiles</h2>              
-         </v-card-title>
-         <v-card-text>
-            <form @submit.prevent="onSubmit" @input="onInputChanged">
-               <v-row>
-                  <v-col cols="12">
-                     <v-text-field :label="labels['name']"                
-                     v-model="state.form.name"
-                     :error-messages="v$.name.$errors.map(e => e.$message)"                     
-                     @input="v$.name.$touch"
-                     @blur="v$.name.$touch"
-                     />
-                     <v-text-field :label="labels['phone']"                   
-                     v-model="state.form.phone"
-                     :error-messages="v$.phone.$errors.map(e => e.$message)"                     
-                     @input="v$.phone.$touch"
-                     @blur="v$.phone.$touch"
-                     />
-
-                  </v-col>
-                  <v-col cols="12">
-                     <v-btn type="submit" color="success">
-                     Submit
-                     </v-btn>
-                  </v-col> 
-                  <v-col cols="12">
-                     <CoreErrorList />
-                  </v-col>  
-               </v-row>
-            </form>
-         </v-card-text>
-      </v-card>
+      <div>
+         <v-card :max-width="DIALOG_MAX_WIDTH">
+            <v-card-title class="font-weight-black">
+               <h2 class="ma-2">Profiles</h2>              
+            </v-card-title>
+            <v-card-text>
+               <v-container>
+                  <ProfileForm ref="form"
+                  :model="state.model" :active="!state.password.active"
+                  @submit="onSubmit"
+                  />
+               </v-container>
+            </v-card-text>
+         </v-card>
+         <v-card :max-width="DIALOG_MAX_WIDTH">
+            <v-card-title class="font-weight-black">
+               <h2 class="ma-2">Password</h2>              
+            </v-card-title>
+            <v-card-text>
+               <v-container>
+                  <PasswordView v-if="state.model" :model="state.model"
+                  @active="(val) => state.password.active = val" 
+                  @updated="onUpdated"
+                  />
+               </v-container>
+            </v-card-text>
+         </v-card>
+         
+      </div>
    </CoreContainer>
 </template>

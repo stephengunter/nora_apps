@@ -8,7 +8,6 @@ import { resolveUserFromClaims, isAdmin, isEmptyObject } from '@/utils'
 import { CHECK_AUTH, LOGIN, LOGIN_BY_GOOGLE, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
 import { SET_AUTH, PURGE_AUTH, SET_USER, SET_LOADING } from '@/store/mutations.type'
 
- 
 const state = {
    user: {}
 }
@@ -39,6 +38,7 @@ const actions = {
             }) 
             context.dispatch(CHECK_AUTH)
             .then(result => {
+               console.log('result', result)
                if(result) resolve() //is admin
                else reject(defaultError)
             })
@@ -74,10 +74,9 @@ const actions = {
          setTimeout(() => {
             resolve(true)
          }, 500)
-      }) 
+      })
    },
    [CHECK_AUTH](context) {
-      console.log(CHECK_AUTH)
       return new Promise((resolve) => {
          let token = JwtService.getToken()         
          if(token) {

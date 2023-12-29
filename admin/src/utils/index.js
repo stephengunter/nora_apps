@@ -1,14 +1,4 @@
-import { API_URL, PHOTO_ACTION_PATH } from '@/config'
-import { isEmptyObject } from './helpers'
 import { ERRORS, WARNING, SUCCESS } from '@/consts'
-
-
-export const scrollToTop = () => {
-   let element = document.getElementById('app')
-   if(!element) return
-
-   element.scrollIntoView()
-}
 
 export const resolveErrorData = (error) => {
    if(error) {
@@ -23,61 +13,6 @@ export const onSuccess = (msg) => Bus.emit(SUCCESS, msg)
 
 export const onWarning = (msg) => Bus.emit(WARNING, msg)
 
-export const activeOptions = [{
-      value: true,
-      text: '上架中'
-   },{
-      value: false,
-      text: '已下架'
-   }]
-
-export const statusText = (active) => active ? '上架中' : '已下架'
-
-
-export const buildQuery = (url, params) => {
-   if(!params || isEmptyObject(params)) return url
-   url += '?'
-   for (let field in params) {
-      let value = params[field]
-      url += `${field}=${value}&`
-   }
-   return url.substr(0, url.length - 1)
-}
-
-
-export const photoNameUrl = (name, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}`
-   let params = { name }
-   if(width) params['width'] = width
-   if(height) params['height'] = height
-   if(type) params['type'] = type
-  
-   return buildQuery(url, params)
-}
-
-export const photoIdUrl = (id, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}/${id}`
-   let params = {}
-   if(width) params['width'] = width
-   if(height) params['height'] = height
-   if(type) params['type'] = type
-  
-   return buildQuery(url, params)
-}
-
-export const hasIntersection = (arrA, arrB) => arrA.some((val) => arrB.indexOf(val) !== -1)
-
-export const noIntersection = (arrA, arrB) => !hasIntersection(arrA, arrB)
-
-export const deepClone = (obj) => JSON.parse(JSON.stringify(obj))
-
-export const setValues = (form, model) => {
-   for(const [key, value] of Object.entries(form)) {
-		if(model.hasOwnProperty(key)) {
-			model[key] = value
-		}
-	}
-}
 
 export const uuid = (len = 8, radix = 16) => {
    let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
@@ -111,9 +46,14 @@ export const uuid = (len = 8, radix = 16) => {
 
 
 
-export * from './users'
-export * from './formats'
-export * from './helpers'
-export * from './highlights'
-export * from './validators'
+export * from './arrays'
+export * from './cn'
 export * from './emoji'
+export * from './helpers'
+export * from './inputs'
+export * from './objects'
+export * from './query'
+export * from './ui'
+export * from './users'
+export * from './validators'
+export * from './vuex'

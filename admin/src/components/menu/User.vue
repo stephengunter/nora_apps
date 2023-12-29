@@ -38,13 +38,11 @@ function onSelected(name) {
    if(name === LOGOUT) logout()
    else if(name === 'profiles') profiles()
 }
-function logout()
-{
+function logout() {
    store.dispatch(LOGOUT)
    .then(() => router.push({ name: 'login' }))   
 }
-function profiles()
-{
+function profiles() {
    router.push({ name: 'profiles' })
 }
 

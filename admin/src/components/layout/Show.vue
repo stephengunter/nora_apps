@@ -46,7 +46,7 @@ function showPhoto(photo) {
 <div>
    <v-dialog v-model="photo.active" :max-width="photo.maxWidth">
       <v-card v-if="photo.model">
-         <core-close-icon-button @close="showPhoto(null)" />
+         <!-- <core-close-icon-button @close="showPhoto(null)" /> -->
          <v-card-text>
             <div class="text-center" style="padding-top:36px;">
                <v-img class="img-center" :src="photo.model.id | photoIdUrl"

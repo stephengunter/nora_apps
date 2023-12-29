@@ -2,6 +2,7 @@
 export const GET_MENUS = 'getMenus'
 export const SHOW_PHOTO = 'showPhoto'
 export const SHOW_CONFIRM = 'showConfirm'
+export const HIDE_CONFIRM = 'hideConfirm'
 
 //Auth
 export const LOGIN = 'login'
@@ -48,6 +49,10 @@ export const ADD_USER_PASSWORD = 'addUserPassword'
 //Profiles
 export const GET_PROFILES = 'getProfiles'
 export const UPDATE_PROFILES = 'updateProfiles'
+
+//Passwords
+export const SET_PASSWORD = 'setPassword'
+export const CHANGE_PASSWORD = 'changePassword'
 
 //Medias
 export const INIT_MEDIAS = 'initMedias'

@@ -27,7 +27,6 @@ function init() {
 }
 
 function fetchData(id) {
-	console.log('fetchData', id)
 	if(id) {
 		store.dispatch(EDIT_ARTICLE, id)
 		.then(model => {

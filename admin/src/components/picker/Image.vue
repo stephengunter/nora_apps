@@ -2,7 +2,7 @@
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { url, required, helpers } from '@vuelidate/validators'
-import { FIELD_REQUIRED, FIELD_WRONG_FORMAT_ } from '@/consts'
+import { VALIDATE_MESSAGES } from '@/consts'
 import { DIALOG_MAX_WIDTH } from '@/config'
 
 const name = 'PickerImage'
@@ -17,8 +17,8 @@ const form = reactive({
 })
 const rules = {
 	url: { 
-      required: helpers.withMessage(`${FIELD_REQUIRED}${labels['url']}`, required), 
-      url: helpers.withMessage(FIELD_WRONG_FORMAT_, url)
+      required: helpers.withMessage(VALIDATE_MESSAGES.REQUIRED('Url'), required), 
+      url: helpers.withMessage(VALIDATE_MESSAGES.WRONG_FORMAT_OF('Url'), url)
    }
 }
 

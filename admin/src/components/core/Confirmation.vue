@@ -38,7 +38,7 @@ const emit = defineEmits(['ok', 'cancel'])
 const title_style = computed(() => {
    if(props.type === ERRORS) return 'bg-red'
    else if(props.type === WARNING) return 'bg-warning'
-   return ''
+   return 'bg-info'
 })
 const title_icon = computed(() => {
    if(props.type === ERRORS) return 'mdi-alert-circle'

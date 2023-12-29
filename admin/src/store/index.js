@@ -5,6 +5,7 @@ import auth from './modules/auth.module'
 import articles from './modules/articles.module'
 import users from './modules/users.module'
 import profiles from './modules/profiles.module'
+import passwords from './modules/passwords.module'
 
 const store = createStore({
    modules: {
@@ -12,7 +13,8 @@ const store = createStore({
       auth,
       articles,
       users,
-      profiles
+      profiles,
+      passwords
    }
 })
 

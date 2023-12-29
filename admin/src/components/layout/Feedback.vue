@@ -3,7 +3,7 @@ import { reactive, computed, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute, useRouter } from 'vue-router'
 import { CHECK_AUTH, REFRESH_TOKEN } from '@/store/actions.type'
-import { LOGIN, RE_LOGIN, SHOW_CONFIRM } from '@/store/actions.type'
+import { LOGIN, RE_LOGIN, SHOW_CONFIRM, HIDE_CONFIRM } from '@/store/actions.type'
 import { DIALOG_MAX_WIDTH } from '@/config'
 import { ERRORS, WARNING, SUCCESS, ICONS, DIALOG_TITLE, DIALOG_MESSAGE } from '@/consts'
 
@@ -138,6 +138,7 @@ Bus.on(ERRORS, onError)
 Bus.on(SUCCESS, onSuccess)
 Bus.on(WARNING, onWarning)
 Bus.on(SHOW_CONFIRM, showConfirm)
+Bus.on(HIDE_CONFIRM, hideConfirm)
 Bus.on(RE_LOGIN, reLogin)
 
 </script>

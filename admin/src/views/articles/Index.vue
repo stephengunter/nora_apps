@@ -4,31 +4,35 @@ import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { FETCH_ARTICLES } from '@/store/actions.type'
-import { tryParseInt, onError, activeOptions } from '@/utils'
+import { tryParseInt, onErrors, activeOptions } from '@/utils'
 
 const name = 'ArticlesIndexView'
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
 
-const params = reactive({
-	category: 0,
-	active: 1,
-	page: 1,
-	pageSize: 10
+const initialState = {
+   params: {
+		category: 0,
+		active: 1,
+		page: 1,
+		pageSize: 10
+	}
+}
+const state = reactive({
+   ...initialState,
 })
-const active_options = ref([{
-	value: 1,
-	text: '上架中'
-},{
-	value: 0,
-	text: '已下架'
-}])
-const pagedList = computed(() => store.state.articles.pagedList)
 
-watch(route, init)
 
-onBeforeMount(init)
+// const pagedList = computed(() => store.state.articles.pagedList)
+
+// watch(route, init)
+
+onBeforeMount(() => {
+	for(const [key, value] of Object.entries(state.params)) {
+		console.log(key, typeof value)
+	}
+})
 
 function init() {
 	if(route.query) {
@@ -41,39 +45,39 @@ function init() {
 	fetchData()
 }
 
-function fetchData() {
-	store.dispatch(FETCH_ARTICLES, params)
-	.catch(error => onError(error))
-}
-function onParamsChanged() {
-	router.push({ path: route.path, query: params })
-}
-function create() {
-	router.push({ path: '/articles/edit' })
-}
-function onPageChanged(page) {
-	params.page = page
-	onParamsChanged()
-}
-function onPageSizeChanged(size) {
-	params.pageSize = size
-	onParamsChanged()
-}
+// function fetchData() {
+// 	store.dispatch(FETCH_ARTICLES, params)
+// 	.catch(error => onError(error))
+// }
+// function onParamsChanged() {
+// 	router.push({ path: route.path, query: params })
+// }
+// function create() {
+// 	router.push({ path: '/articles/edit' })
+// }
+// function onPageChanged(page) {
+// 	params.page = page
+// 	onParamsChanged()
+// }
+// function onPageSizeChanged(size) {
+// 	params.pageSize = size
+// 	onParamsChanged()
+// }
 
-function test() {
-	console.log('test')
-}
+// function test() {
+// 	console.log('test')
+// }
 </script>
 
 <template>
 	<div>
-		<ArticleHeader :params="params" 
+		<!-- <ArticleHeader :params="params" 
 		@changed="onParamsChanged" @create="create"
 		/>
 		<core-table-pager v-if="pagedList"
 		:model="pagedList"
 		@page_changed="onPageChanged" @size_changed="onPageSizeChanged"
-		/>
+		/> -->
 	</div>
 	
    

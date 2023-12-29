@@ -6,7 +6,7 @@ import JwtService from '@/services/jwt.service'
 import { ROUTE_TYPES } from '@/consts'
 import { APP_CLOSED } from '@/config'
 import { CHECK_AUTH, REFRESH_TOKEN } from '@/store/actions.type'
-import { SET_MENUS, SET_ROUTE } from '@/store/mutations.type'
+import { SET_MENUS, SET_ROUTE, CLEAR_ERRORS } from '@/store/mutations.type'
 import { getMainMenus } from '@/common/menu'
 
 const history = createWebHistory(process.env.BASE_URL)
@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
 	if(APP_CLOSED && to.name !== 'close') return redirect(next, { name: 'close' })
 	
 	store.commit(SET_ROUTE, { to, from })
-	
+	store.commit(CLEAR_ERRORS)
 	store.dispatch(CHECK_AUTH).then(auth => {
 		if(to.meta.type === ROUTE_TYPES.FOR_ALL) return authDone(next, to, auth)
 	

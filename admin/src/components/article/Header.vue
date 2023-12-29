@@ -1,6 +1,7 @@
 <script setup>
 import { MqResponsive } from 'vue3-mq'
 import { ref } from 'vue'
+import { activeOptions } from '@/utils'
 
 const name = 'ArticlesHeader'
 const props = defineProps({
@@ -9,13 +10,13 @@ const props = defineProps({
       default: null
    }
 })
-const active_options = ref([{
-	value: 1,
-	text: '上架中'
-},{
-	value: 0,
-	text: '已下架'
-}])
+// const active_options = ref([{
+// 	value: 1,
+// 	text: '上架中'
+// },{
+// 	value: 0,
+// 	text: '已下架'
+// }])
 const emit = defineEmits(['changed', 'create'])
 
 function create() {
@@ -31,7 +32,7 @@ function onChanged() {
 		<v-row>
 			<v-col cols="8">
 				<v-radio-group v-model="params.active" inline @update:modelValue="onChanged">
-					<v-radio v-for="(item, index) in active_options" :key="index"
+					<v-radio v-for="(item, index) in activeOptions" :key="index"
 					:label="item.text" :value="item.value"
 					/>
 				</v-radio-group>
