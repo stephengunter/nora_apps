@@ -1,10 +1,13 @@
 <script setup>
 import { MqResponsive } from 'vue3-mq'
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
+import { ref, reactive, computed, watch, onBeforeMount, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { FETCH_ARTICLES } from '@/store/actions.type'
-import { tryParseInt, onErrors, activeOptions } from '@/utils'
+import { SET_ERRORS, CLEAR_ERRORS } from '@/store/mutations.type'
+import { isEmptyObject, copyFromQuery , activeOptions, resolveErrorData, onErrors } from '@/utils'
+import { ROUTE_NAMES, ACTION_TITLES } from '@/consts'
+import { nextTick } from 'vue'
 
 const name = 'ArticlesIndexView'
 const store = useStore()
@@ -12,9 +15,9 @@ const route = useRoute()
 const router = useRouter()
 
 const initialState = {
-   params: {
+	params: {
 		category: 0,
-		active: 1,
+		active: true,
 		page: 1,
 		pageSize: 10
 	}
@@ -22,63 +25,91 @@ const initialState = {
 const state = reactive({
    ...initialState,
 })
+const active_options = activeOptions
 
-
-// const pagedList = computed(() => store.state.articles.pagedList)
-
-// watch(route, init)
+const pagedList = computed(() => store.state.articles.pagedList)
 
 onBeforeMount(() => {
-	for(const [key, value] of Object.entries(state.params)) {
-		console.log(key, typeof value)
-	}
+	loadParams()
+	fetchData(state.params)
+})
+watch(route, () => {
+	loadParams()
+	fetchData(state.params)
 })
 
-function init() {
-	if(route.query) {
-		const query = route.query
-		if(query.hasOwnProperty('category')) params.category = tryParseInt(query['category'])
-		if(query.hasOwnProperty('active')) params.active = tryParseInt(query['active'])
-		if(query.hasOwnProperty('page')) params.page = tryParseInt(query['page'])
-		if(query.hasOwnProperty('pageSize')) params.pageSize = tryParseInt(query['pageSize'])
-	}
-	fetchData()
+function loadParams() {
+	if(isEmptyObject(route.query)) state.params = { ...initialState.params }
+	else copyFromQuery(state.params, route.query)
 }
 
-// function fetchData() {
-// 	store.dispatch(FETCH_ARTICLES, params)
-// 	.catch(error => onError(error))
-// }
-// function onParamsChanged() {
-// 	router.push({ path: route.path, query: params })
-// }
-// function create() {
-// 	router.push({ path: '/articles/edit' })
-// }
-// function onPageChanged(page) {
-// 	params.page = page
-// 	onParamsChanged()
-// }
-// function onPageSizeChanged(size) {
-// 	params.pageSize = size
-// 	onParamsChanged()
-// }
-
-// function test() {
-// 	console.log('test')
-// }
+function fetchData(params) {
+	store.commit(CLEAR_ERRORS)
+	store.dispatch(FETCH_ARTICLES, params)
+	.then(() => {
+		nextTick(() => {
+			console.log('damn', pagedList.value)
+		})
+	})
+	.catch(error => {
+		let errors = resolveErrorData(error)
+		if(errors) store.commit(SET_ERRORS, Object.values(errors))
+		else onErrors(error)
+	})
+}
+function onParamsChanged() {
+	router.push({ path: route.path, query: { ...state.params } })
+}
+function create() {
+	router.push({ name: ROUTE_NAMES.ARTICLE_EDIT })
+}
+function onSelect(id) {
+	router.push({ name: ROUTE_NAMES.ARTICLE_EDIT, params: { id } })
+}
 </script>
 
 <template>
-	<div>
-		<!-- <ArticleHeader :params="params" 
-		@changed="onParamsChanged" @create="create"
-		/>
-		<core-table-pager v-if="pagedList"
-		:model="pagedList"
-		@page_changed="onPageChanged" @size_changed="onPageSizeChanged"
-		/> -->
-	</div>
+	<MqResponsive target="md+">
+		<v-row dense>
+			<v-col cols="8">
+				<v-radio-group v-model="state.params.active" inline @update:modelValue="onParamsChanged">
+					<v-radio v-for="(item, index) in active_options" :key="index"
+					:label="item.text" :value="item.value"
+					/>
+				</v-radio-group>
+			</v-col>
+			<v-col cols="4" class="text-right">
+				<v-tooltip :text="ACTION_TITLES.CREATE">
+					<template v-slot:activator="{ props }">
+						<v-btn icon="mdi-plus" v-bind="props" color="info"
+						@click="create"
+						/>
+					</template>
+				</v-tooltip>
+			</v-col>
+			<v-col cols="12">
+				<CoreErrorList />
+			</v-col>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12">
+				<ArticleTable v-if="!isEmptyObject(pagedList)" 
+				:model="pagedList"
+				@select="onSelect"
+				/>
+			</v-col>
+		</v-row>
+	</MqResponsive>
+	<MqResponsive target="sm-">
+		<v-fade-transition mode="out-in">
+			<v-row>
+				<v-col cols="12">
+					
+					small
+				</v-col>
+			</v-row>
+		</v-fade-transition>
+	</MqResponsive>
 	
    
 </template>

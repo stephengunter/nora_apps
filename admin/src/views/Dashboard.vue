@@ -1,11 +1,13 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { resolveErrorData, onErrors, onSuccess } from '@/utils'
+import { resolveErrorData, photoCustomTag, onSuccess } from '@/utils'
 
 const data = reactive({
 	dialog: false,
 	text: '<p>Example Text</p><p>I will display &#x1f60e;</p>'
 })
+
+const accountBalance = '995'
 function save() {
 	onSuccess('登入成功')
    // const content = tiptap.value.getContent()
@@ -15,15 +17,17 @@ function save() {
 const tiptap = ref(null)
 
 onMounted(() => {
+	
+	//if(!matches) return result;
 	//console.log(tiptap.value);
 })
 </script>
 
 <template>
-	<CoreContainer>
+	<div>
 	<v-row>
 		<v-col cols="12">
-			
+			<p>{{ $filters.currencyUSD(accountBalance) }}</p>
 			<span style="display: inline-block;" class="qqface-wrapper">
 				<img src="/qqface.png" class="qqface qqface5">
 			</span>
@@ -40,5 +44,5 @@ onMounted(() => {
 			
 		</v-col>
 	</v-row>
-</CoreContainer>
+</div>
 </template>

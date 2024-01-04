@@ -7,6 +7,7 @@ import Image from '@tiptap/extension-image'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { DIALOG_MAX_WIDTH } from '@/config'
+import { photoCustomTag, emojiCustomTag } from '@/utils'
 
 const name = 'EditorTiptap'
 const props = defineProps({
@@ -26,14 +27,18 @@ defineExpose({
    getContent, isEmpty
 })
 
-const bubble = ref(null)
-const data = reactive({
+const initialState = {
 	content: '',
 	code: false,
 	image: {
 		active: false
 	}
+}
+const state = reactive({
+   ...initialState,
 })
+
+const bubble = ref(null)
 
 const editor = useEditor({
 	content: '',
@@ -53,8 +58,8 @@ const editor = useEditor({
 })
 onMounted(() => {
 	window.addEventListener('mouseup', handleBubble)
-	data.content = props.content
-	editor.value.commands.setContent(data.content)
+	state.content = props.content
+	editor.value.commands.setContent(state.content)
 })
 
 onBeforeUnmount(() => {
@@ -63,40 +68,40 @@ onBeforeUnmount(() => {
 })
 
 function getContent() {
-	if(data.code) {
-		editor.value.commands.setContent(data.content)
+	if(state.code) {
+		editor.value.commands.setContent(state.content)
 	}else {
-		data.content = editor.value.getHTML()
+		state.content = editor.value.getHTML()
 	}
-	return data.content
+	return state.content
 }
 
 function code() {
-	if(data.code) {
-		editor.value.commands.setContent(data.content)
+	if(state.code) {
+		editor.value.commands.setContent(state.content)
 	}else {
-		data.content = editor.value.getHTML()
+		state.content = editor.value.getHTML()
 	}
-	data.code = !data.code
+	state.code = !state.code
 }
-function onEmojiSelected({key, value}) {
-	editor.value.commands.insertContent(`[emoji]${key},${value}[/emoji]`)   
+function onEmojiSelected({ key, value }) {
+	editor.value.commands.insertContent(emojiCustomTag({ key, value }))   
 }
 function image(val) {
-	data.image.active = val
+	state.image.active = val
 }
 function onImageSelected(model) {
-	//https://cdn.vuetifyjs.com/images/parallax/material.jpg
-	editor.value.commands.insertContent(`<img src="${model.url}">`)
+	editor.value.commands.insertContent(photoCustomTag(model))
 	image(false)
 }
 
 function handleBubble() {
-	if(data.code) return
+	if(state.code) return
 	var sel = window.getSelection()// ? window.getSelection() : document.selection	
 	if(sel && sel.toString().trim()) {
 		var rect = sel.getRangeAt(0).getBoundingClientRect()
 		let left = rect.left - 3
+
 		let top = rect.top - 65
 		bubble.value.style.left = `${left}px`
 		bubble.value.style.top = `${top}px`
@@ -115,9 +120,7 @@ function cancel_bubble() {
 function convertEmoji(text) {
    let result = text;
 
-   let matches = text.match(/[emoji](.*?)[/emoji]/g);
-	console.log('matches', matches)
-   if(!matches) return result;
+   
 
    // for(let i = 0; i < matches.length; i++) {
    //    let name = matches[i].replace(/<\/?UPLOADPHOTO>/g, '');
@@ -156,7 +159,7 @@ function onChanged() {
 			<div>
 				<v-btn icon="mdi-code-tags" @click.prevent="code" />
 			</div>
-			<div v-show="data.code === false">
+			<div v-show="state.code === false">
 				<v-btn icon="mdi-image" @click.prevent="image(true)" />
 				<v-menu transition="scale-transition">
 					<template v-slot:activator="{ props }">
@@ -174,15 +177,15 @@ function onChanged() {
 			</div>
 		</v-toolbar>
 		<v-card-text>
-			<v-textarea v-show="data.code" variant="outlined" auto-grow shaped
+			<v-textarea v-show="state.code" variant="outlined" auto-grow shaped
          rows="5" row-height="25"
-			v-model="data.content" 
+			v-model="state.content" 
 			@update:modelValue="onChanged"
          />
-			<editor-content v-show="!data.code" :editor="editor" />
+			<editor-content v-show="!state.code" :editor="editor" />
     	</v-card-text>
 	</v-card>
-	<v-dialog v-model="data.image.active" :width="DIALOG_MAX_WIDTH" persistent>
+	<v-dialog v-model="state.image.active" :width="DIALOG_MAX_WIDTH" persistent>
 		<PickerImage 
 		@cancel="image(false)" 
 		@selected="onImageSelected" 

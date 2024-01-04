@@ -60,35 +60,33 @@ function onUpdated(msg) {
 
 </script>
 <template>
-   <CoreContainer>
-      <div>
-         <v-card :max-width="DIALOG_MAX_WIDTH">
-            <v-card-title class="font-weight-black">
-               <h2 class="ma-2">Profiles</h2>              
-            </v-card-title>
-            <v-card-text>
-               <v-container>
-                  <ProfileForm ref="form"
-                  :model="state.model" :active="!state.password.active"
-                  @submit="onSubmit"
-                  />
-               </v-container>
-            </v-card-text>
-         </v-card>
-         <v-card :max-width="DIALOG_MAX_WIDTH">
-            <v-card-title class="font-weight-black">
-               <h2 class="ma-2">Password</h2>              
-            </v-card-title>
-            <v-card-text>
-               <v-container>
-                  <PasswordView v-if="state.model" :model="state.model"
-                  @active="(val) => state.password.active = val" 
-                  @updated="onUpdated"
-                  />
-               </v-container>
-            </v-card-text>
-         </v-card>
-         
-      </div>
-   </CoreContainer>
+   <div>
+      <v-card :max-width="DIALOG_MAX_WIDTH">
+         <v-card-title class="font-weight-black">
+            <h2 class="ma-2">Profiles</h2>              
+         </v-card-title>
+         <v-card-text>
+            <v-container>
+               <ProfileForm ref="form"
+               :model="state.model" :active="!state.password.active"
+               @submit="onSubmit"
+               />
+            </v-container>
+         </v-card-text>
+      </v-card>
+      <v-card :max-width="DIALOG_MAX_WIDTH">
+         <v-card-title class="font-weight-black">
+            <h2 class="ma-2">Password</h2>              
+         </v-card-title>
+         <v-card-text>
+            <v-container>
+               <PasswordView v-if="state.model" :model="state.model"
+               @active="(val) => state.password.active = val" 
+               @updated="onUpdated"
+               />
+            </v-container>
+         </v-card-text>
+      </v-card>
+      
+   </div>
 </template>

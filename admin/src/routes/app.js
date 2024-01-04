@@ -1,4 +1,4 @@
-import { ROUTE_TYPES } from '@/consts'
+import { ROUTE_TYPES, ROUTE_NAMES } from '@/consts'
 
 const applinks = [{
    name: 'close',
@@ -42,7 +42,7 @@ const adminlinks = [{
    } 
 },
 {
-   name: 'articles',
+   name: ROUTE_NAMES.ARTICLE_INDEX,
    path: '/articles',
    view: 'articles/Index',      
    meta: {
@@ -54,7 +54,7 @@ const adminlinks = [{
    } 
 },
 {
-   name: 'article-edit',
+   name: ROUTE_NAMES.ARTICLE_EDIT,
    path: '/articles/edit/:id?',
    view: 'articles/Edit',
    meta: {

@@ -28,7 +28,7 @@ const actions = {
          ArticlesService.fetch(params)
             .then(model => {
                context.commit(SET_ARTICLES, model)
-               resolve(model)
+               resolve()
             })
             .catch(error => {
                reject(error)
@@ -39,60 +39,39 @@ const actions = {
       })
    },
    [CREATE_ARTICLE](context) {
+      context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.create()
-            .then(model => {
-               resolve(model)
-            })
-            .catch(error => {
-               reject(error)      
-            })
-            .finally(() => { 
-               context.commit(SET_LOADING, false)
-            })
+         .then(model => resolve(model))
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    [STORE_ARTICLE](context, model) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.store(model)
-         .then(article => {
-            resolve(article)
-         })
-         .catch(error => {
-            reject(resolveErrorData(error))
-         })
-         .finally(() => { 
-            context.commit(SET_LOADING, false)
-         })
+         .then(article => resolve(article))
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    [EDIT_ARTICLE](context, id) {
+      context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.edit(id)
-            .then(model => {
-               resolve(model)
-            })
-            .catch(error => {
-               reject(error)        
-            })
-            .finally(() => { 
-               context.commit(SET_LOADING, false)
-            })
+         .then(model => resolve(model))
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    [UPDATE_ARTICLE](context, model) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.update(model.id, model)
-            .then(resolve())
-            .catch(error => {
-               console.log('error', error)
-               reject(resolveErrorData(error)) 
-            })
-            .finally(() => { 
-               context.commit(SET_LOADING, false)
-            })
+         .then(resolve())
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    [OFF_ARTICLE](context, id) {

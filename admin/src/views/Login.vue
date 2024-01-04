@@ -102,53 +102,51 @@ function onInputChanged(){
 
 
 <template>
-   <CoreContainer>
-      <v-card :max-width="DIALOG_MAX_WIDTH">
-         <v-card-title class="font-weight-black">
-            <h2 class="ma-2">登入</h2>            
-         </v-card-title>
-         <v-card-text>
-            <v-container>
-               <form @submit.prevent="onSubmit" @input="onInputChanged">
-                  <v-row>
-                     <v-col cols="12">
-                        <v-text-field variant="outlined" :label="labels['username']"
-                        prepend-inner-icon="mdi-email-outline"
-                        density="compact" :placeholder="`請輸入${labels['username']}`"                     
-                        v-model="state.form.username"
-                        :error-messages="v$.username.$errors.map(e => e.$message)"                     
-                        @input="v$.username.$touch"
-                        @blur="v$.username.$touch"
-                        />
-                        <v-text-field variant="outlined" :label="labels['password']"
-                        prepend-inner-icon="mdi-lock-outline"
-                        density="compact" :placeholder="`請輸入${labels['password']}`" 
-                        :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
-                        :type="state.password.visible ? 'text' : 'password'"
-                        v-model="state.form.password"
-                        :error-messages="v$.password.$errors.map(e => e.$message)"
-                        @input="v$.password.$touch"
-                        @blur="v$.password.$touch"
-                        @click:append-inner="state.password.visible = !state.password.visible"
-                        />
-                     </v-col>
-                     <v-col cols="12">
-                        <v-btn type="submit" color="success" class="float-right">
-                        登入
-                        </v-btn>
-                     </v-col> 
-                     <v-col cols="12">
-                        <CoreErrorList />
-                     </v-col>  
-                  </v-row>
-               </form>
+   <v-card :max-width="DIALOG_MAX_WIDTH">
+      <v-card-title class="font-weight-black">
+         <h2 class="ma-2">登入</h2>            
+      </v-card-title>
+      <v-card-text>
+         <v-container>
+            <form @submit.prevent="onSubmit" @input="onInputChanged">
                <v-row>
                   <v-col cols="12">
-                     <GoogleLogin :callback="callback"/>
+                     <v-text-field variant="outlined" :label="labels['username']"
+                     prepend-inner-icon="mdi-email-outline"
+                     density="compact" :placeholder="`請輸入${labels['username']}`"                     
+                     v-model="state.form.username"
+                     :error-messages="v$.username.$errors.map(e => e.$message)"                     
+                     @input="v$.username.$touch"
+                     @blur="v$.username.$touch"
+                     />
+                     <v-text-field variant="outlined" :label="labels['password']"
+                     prepend-inner-icon="mdi-lock-outline"
+                     density="compact" :placeholder="`請輸入${labels['password']}`" 
+                     :append-inner-icon="state.password.visible ? 'mdi-eye-off' : 'mdi-eye'"
+                     :type="state.password.visible ? 'text' : 'password'"
+                     v-model="state.form.password"
+                     :error-messages="v$.password.$errors.map(e => e.$message)"
+                     @input="v$.password.$touch"
+                     @blur="v$.password.$touch"
+                     @click:append-inner="state.password.visible = !state.password.visible"
+                     />
                   </v-col>
+                  <v-col cols="12">
+                     <v-btn type="submit" color="success" class="float-right">
+                     登入
+                     </v-btn>
+                  </v-col> 
+                  <v-col cols="12">
+                     <CoreErrorList />
+                  </v-col>  
                </v-row>
-            </v-container>
-         </v-card-text>
-      </v-card>
-   </CoreContainer>
+            </form>
+            <v-row>
+               <v-col cols="12">
+                  <GoogleLogin :callback="callback"/>
+               </v-col>
+            </v-row>
+         </v-container>
+      </v-card-text>
+   </v-card>
 </template>

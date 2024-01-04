@@ -8,10 +8,10 @@ export const scrollToTop = () => {
 }
 
 export const activeOptions = [{
-   value: 1,
+   value: true,
    text: '上架中'
 },{
-   value: 0,
+   value: false,
    text: '已下架'
 }]
 

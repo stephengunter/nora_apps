@@ -6,6 +6,7 @@
 
 // Plugins
 import vuetify from './vuetify'
+import { registerFilters } from './filters'
 import vue3GoogleLogin from 'vue3-google-login'
 import { Vue3Mq } from 'vue3-mq'
 import { GOOGLE_AUTH_PARAMS } from '@/config'
@@ -23,4 +24,7 @@ export const registerPlugins = (app) => {
 		})
 		.use(router)
 		.use(store)
+
+	registerFilters(app)	
+		
 }

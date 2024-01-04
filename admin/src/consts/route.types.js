@@ -4,3 +4,7 @@ export const ROUTE_TYPES = {
    USER_ONLY: 'userOnly',
    ADMIN_ONLY: 'adminOnly'   
 }
+export const ROUTE_NAMES = {
+   ARTICLE_INDEX: 'articles',
+   ARTICLE_EDIT: 'article-edit',  
+}

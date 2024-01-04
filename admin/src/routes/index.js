@@ -34,7 +34,8 @@ const authDone = (next, to, auth = false) => {
 	return next()
 }
 const refreshToken = (next, to) => {
-	store.dispatch(REFRESH_TOKEN).then(token => {	
+	store.dispatch(REFRESH_TOKEN)
+	.then(token => {	
 		if(token) return redirect(next, { path: to.path })
 		else return redirect(next, { path: '/login' })
 	})
@@ -55,7 +56,7 @@ router.beforeEach((to, from, next) => {
 	
 		if(auth) { 
 			if(to.meta.type === ROUTE_TYPES.GUEST_ONLY) return redirect(next, { path: '/' })
-
+			
 			let tokenStatus = JwtService.tokenStatus()
 			if(tokenStatus === -1) {
 				//token過期

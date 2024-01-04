@@ -101,11 +101,12 @@ const actions = {
       return new Promise((resolve) => {
          let accessToken = JwtService.getToken()
          let refreshToken = JwtService.getRefreshToken()
+         let claims = JwtService.resolveClaims(accessToken)
          if(accessToken && refreshToken) {
-            AuthService.refreshToken({ accessToken, refreshToken })
+            AuthService.refreshToken(claims.id, { accessToken, refreshToken })
             .then(model => {
                context.commit(SET_AUTH, {
-                  token: model.accessToken.token,
+                  token: model.token,
                   refreshToken: model.refreshToken
                })
                resolve(true)

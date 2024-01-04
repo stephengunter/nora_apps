@@ -1,4 +1,5 @@
 <script setup>
+import { MqResponsive } from 'vue3-mq'
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -6,17 +7,26 @@ import {
    CREATE_ARTICLE, STORE_ARTICLE, 
    EDIT_ARTICLE, UPDATE_ARTICLE, OFF_ARTICLE, DELETE_ARTICLE
 } from '@/store/actions.type'
-import { setValues, onError, onSuccess } from '@/utils'
+import { SET_ERRORS, CLEAR_ERRORS } from '@/store/mutations.type'
+import { isEmptyObject, setValues, resolveErrorData, onErrors, onSuccess } from '@/utils'
+import { ROUTE_NAMES } from '@/consts'
 
 const name = 'ArticlesEditView'
-const INDEX_NAME = 'articles'
-const data = reactive({
-	model: null
-})
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-const pagedList = computed(() => store.state.articles.pagedList)
+
+const initialState = {
+	model: {}
+	
+}
+const state = reactive({
+   ...initialState,
+})
+const title = computed(() => {
+	if(isEmptyObject(state.model)) return '新增文章'
+	return state.model.id ? '編輯文章' : '新增文章'
+})
 
 watch(route, init)
 
@@ -30,42 +40,57 @@ function fetchData(id) {
 	if(id) {
 		store.dispatch(EDIT_ARTICLE, id)
 		.then(model => {
-			data.model = model
+			state.model = { ...model }
+			console.log(state.model)
 		})
-		.catch(error => onError(error))
+		.catch(error => onSubmitError(error))
 	}else {
 		store.dispatch(CREATE_ARTICLE)
 		.then(model => {
-			data.model = model
+			state.model = { ...model }
 		})
-		.catch(error => onError(error))
+		.catch(error => onSubmitError(error))
 	}
 }
-
-function save(form) {
-	setValues(form, data.model)
-
-	let action = data.model.id > 0 ? UPDATE_ARTICLE : STORE_ARTICLE
-	store.dispatch(action, data.model)
-	.then(() => {
-		onSuccess()
-	})
-	.catch(error => onError(error))
+function onSubmit(form) {
+	let action = form.id > 0 ? UPDATE_ARTICLE : STORE_ARTICLE
+	store.dispatch(action, form)
+	.then(() => onSubmitSuccess())
+	.catch(error => onSubmitError(error))
 }
 function cancel() {
-	console.log('cancel')
+	back()
 }
+
 function back() {
 	const from = store.state.app.route.from
-	if(from && from.name === INDEX_NAME && from.query) {
-		router.push({ name: INDEX_NAME, query: from.query })
+	if(from && from.name === ROUTE_NAMES.ARTICLE_INDEX && from.query) {
+		router.push({ name: ROUTE_NAMES.ARTICLE_INDEX, query: from.query })
 	}
-	else router.push({ name: INDEX_NAME })
+	else router.push({ name: ROUTE_NAMES.ARTICLE_INDEX })
+}
+function onSubmitSuccess() {	
+	let msg = `${title.value}成功`
+	onSuccess(msg)
+	back()
+}
+function onSubmitError(error) {
+   let errors = resolveErrorData(error)
+   if(errors) store.commit(SET_ERRORS, Object.values(errors))
+   else onErrors(error)
 }
 </script>
 
 <template>
-	<ArticleEdit v-if="data.model" :model="data.model" 
-	@save="save" @cancel="back"
-	/>
+	<CoreContainer>
+		<MqResponsive target="md+">
+			<ArticleForm v-if="!isEmptyObject(state.model)"
+			:model="state.model" :title="title"
+			@cancel="cancel" @submit="onSubmit"
+			/>
+		</MqResponsive>
+		<MqResponsive target="sm-">
+			edit
+		</MqResponsive>
+	</CoreContainer>
 </template>

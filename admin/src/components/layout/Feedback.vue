@@ -105,6 +105,7 @@ function redirect(name, returnUrl) {
 }
 
 function onSuccess(msg) {
+	console.log('onSuccess', msg)
 	state.success.icon = ICONS[SUCCESS]
 	state.success.color = SUCCESS
 	state.success.msg = msg ? msg : '存檔成功'
