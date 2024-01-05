@@ -69,7 +69,7 @@ const actions = {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.update(model.id, model)
-         .then(resolve())
+         .then(() => resolve())
          .catch(error => reject(error))
          .finally(() => context.commit(SET_LOADING, false))
       })
@@ -78,30 +78,18 @@ const actions = {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.off(id)
-         .then(() => {
-            resolve(true)
-         })
-         .catch(error => {
-            reject(error)
-         })
-         .finally(() => { 
-            context.commit(SET_LOADING, false)
-         })
+         .then(() => resolve())
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    [DELETE_ARTICLE](context, id) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
          ArticlesService.remove(id)
-            .then(() => {
-               resolve(true)
-            })
-            .catch(error => {
-               reject(error)
-            })
-            .finally(() => { 
-               context.commit(SET_LOADING, false)
-            })
+         .then(() => resolve())
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })
    },
    

@@ -68,9 +68,11 @@ function cancel() {
       </v-card-title>
       <slot>
          <v-card-text v-if="text">
-            <p>
-               {{ text }}
-            </p>
+            <v-container>
+               <p v-html="text">
+               
+               </p>
+            </v-container>
          </v-card-text>
       </slot>
       <v-card-actions v-show="!noAction">

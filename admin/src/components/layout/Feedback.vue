@@ -42,7 +42,7 @@ const confirmNoAction = computed(() => {
 	if(state.confirm.on_cancel) return false
 	return true
 })
- 
+
 function onError(error) {
 	let confirm = {
 		type: ERRORS,
@@ -50,19 +50,29 @@ function onError(error) {
 		text: DIALOG_MESSAGE[ERRORS]
 	}
 	if(error) {
-		console.log(error)
 		if(error.title) confirm.title = error.title
 		if(error.text) confirm.text = error.text
-		
-		let status = error.status
-		errorHandler(status, confirm)
+		errorHandler(error, confirm)
 	}else {
 		// no error state
 		showConfirm(confirm)
 	}
 }
-function errorHandler(code, confirm) {
-	if(code === 401) {
+function errorHandler(error, confirm) {
+	if(error.status === 400) {
+		let errors = resolveErrorData(error)
+		if(errors) {
+			if(Object.values(errors)) {
+				let text = ''
+				Object.values(errors).forEach(item => {
+					text += `<ul><li>${item}</li></ul>`
+				})
+				confirm.text = text
+			}
+			
+      }
+		showConfirm(confirm)
+	}else if(error.status === 401) {	
 		reLogin(() => {
 			showConfirm({
 				type: '',
@@ -70,7 +80,7 @@ function errorHandler(code, confirm) {
 				text: '您的驗証剛剛刷新，請重新操作一次'
 			})
 		})
-	}else if(code === 403) {
+	}else if(error.status === 403) {
 		//Forbidden
 		showConfirm({
 			type: '',
@@ -79,6 +89,9 @@ function errorHandler(code, confirm) {
 			ok: '確定',
 			cancel: ''
 		})
+	}else if(error.status === 500) {
+		confirm.text = DIALOG_MESSAGE[SERVER_ERROR]
+		showConfirm(confirm)
 	}else {
 		showConfirm(confirm)
 	}
@@ -160,7 +173,7 @@ Bus.on(RE_LOGIN, reLogin)
 		</v-snackbar>
 
 		<v-dialog v-model="state.confirm.active" :max-width="state.confirm.maxWidth" :persistent="!confirmNoAction">
-			<core-confirmation :type="state.confirm.type"
+			<CoreConfirmation :type="state.confirm.type"
 			:title="state.confirm.title" :text="state.confirm.text"
 			:ok_text="state.confirm.ok_text"  :cancel_text="state.confirm.cancel_text"
 			:on_cancel="state.confirm.on_cancel"  :on_ok="state.confirm.on_ok"

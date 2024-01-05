@@ -97,12 +97,11 @@ function onImageSelected(model) {
 
 function handleBubble() {
 	if(state.code) return
-	var sel = window.getSelection()// ? window.getSelection() : document.selection	
+	var sel = window.getSelection()	
 	if(sel && sel.toString().trim()) {
 		var rect = sel.getRangeAt(0).getBoundingClientRect()
-		let left = rect.left - 3
-
-		let top = rect.top - 65
+		let left = rect.left < 600 ? (rect.left + 30) : (rect.left - 360)
+		let top = rect.top - 90
 		bubble.value.style.left = `${left}px`
 		bubble.value.style.top = `${top}px`
 		bubble.value.style.display = 'block'
@@ -116,28 +115,6 @@ function cancel_bubble() {
 	var sel = window.getSelection()// ? window.getSelection() : document.selection
 	if(sel) sel.removeAllRanges()
 	bubble.value.style.display = 'none'
-}
-function convertEmoji(text) {
-   let result = text;
-
-   
-
-   // for(let i = 0; i < matches.length; i++) {
-   //    let name = matches[i].replace(/<\/?UPLOADPHOTO>/g, '');
-   //    if(!name) continue;
-
-   //    let isEmoji = name.split('/')[0].toLowerCase() === POST_TYPES.EMOJI.toLowerCase();
-      
-   //    let photoUrl = photoNameUrl(name, maxWidth);
-      
-   //    //result = result.replace(matches[i], `<a href="#" style="display: block" onclick="event.preventDefault(); ${SHOW_PHOTO}(${id});">&#128247;查看圖片</a>`)
-   //    result = isEmoji ? 
-   //             result.replace(matches[i], `<img src="${photoUrl}" class="inline-emoji">`) :
-   //             result.replace(matches[i], `<img src="${photoUrl}">`);
-               
-   // }
-
-   return result;
 }
 function underline(active) {
 	if(active) editor.value.chain().focus().unsetUnderline().run()
@@ -290,13 +267,13 @@ function onChanged() {
 	}
 }
 .custom-bubble {
-  position: absolute;
-  display: none;
-  border: 1px solid;
-  border-color: black;
-  border-radius: 5px;
-  background: #EEE;
-  padding: 2px;
-  white-space: pre;
+	position: fixed;
+	display: none;
+	border: 1px solid;
+	border-color: black;
+	border-radius: 5px;
+	background: #EEE;
+	padding: 2px;
+	white-space: pre;
 }
 </style>

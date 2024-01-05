@@ -1,72 +1,18 @@
-import { isEmptyObject } from './helpers'
-
-export const scrollToTop = () => {
-   let element = document.getElementById('app')
-   if(!element) return
-
-   element.scrollIntoView()
-}
+import { ERRORS, WARNING, SUCCESS } from '@/consts'
 
 export const resolveErrorData = (error) => {
-   console.log(error)
    if(error) {
       if(error.status && error.status === 400) return error.data
    }
-   return null 
+   return null
 }
 
-export const onError = (error) => {
-   console.log(error)
-   Bus.emit('errors')
-}
+export const onErrors = (error) => Bus.emit(ERRORS, error)
 
-export const activeOptions = () => {
-   return [{
-      value: true,
-      text: '上架中'
-   },{
-      value: false,
-      text: '已下架'
-   }]
-}
+export const onSuccess = (msg) => Bus.emit(SUCCESS, msg)
 
+export const onWarning = (msg) => Bus.emit(WARNING, msg)
 
-export const buildQuery = (url, params) => {
-   if(!params || isEmptyObject(params)) return url
-   url += '?'
-   for (let field in params) {
-      let value = params[field]
-      url += `${field}=${value}&`
-   }
-   return url.substr(0, url.length - 1)
-}
-
-
-export const photoNameUrl = (name, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}`
-   let params = { name }
-   if(width) params['width'] = width
-   if(height) params['height'] = height
-   if(type) params['type'] = type
-  
-   return buildQuery(url, params)
-}
-
-export const photoIdUrl = (id, width = 0, height = 0, type = '') => {
-   let url = `${API_URL}${PHOTO_ACTION_PATH}/${id}`
-   let params = {}
-   if(width) params['width'] = width
-   if(height) params['height'] = height
-   if(type) params['type'] = type
-  
-   return buildQuery(url, params)
-}
-
-export const hasIntersection = (arrA, arrB) => arrA.some((val) => arrB.indexOf(val) !== -1)
-
-export const noIntersection = (arrA, arrB) => !hasIntersection(arrA, arrB)
-
-export const deepClone = (obj) => JSON.parse(JSON.stringify(obj))
 
 export const uuid = (len = 8, radix = 16) => {
    let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
@@ -95,9 +41,20 @@ export const uuid = (len = 8, radix = 16) => {
    }
 
    return uuid.join('')
+
 }
 
 
 
+export * from './arrays'
+export * from './cn'
+export * from './emoji'
 export * from './helpers'
+export * from './html'
+export * from './inputs'
+export * from './objects'
+export * from './query'
+export * from './ui'
 export * from './users'
+export * from './validators'
+export * from './vuex'

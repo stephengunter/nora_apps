@@ -41,7 +41,6 @@ function fetchData(id) {
 		store.dispatch(EDIT_ARTICLE, id)
 		.then(model => {
 			state.model = { ...model }
-			console.log(state.model)
 		})
 		.catch(error => onSubmitError(error))
 	}else {
@@ -53,8 +52,9 @@ function fetchData(id) {
 	}
 }
 function onSubmit(form) {
+	setValues(form, state.model)
 	let action = form.id > 0 ? UPDATE_ARTICLE : STORE_ARTICLE
-	store.dispatch(action, form)
+	store.dispatch(action, state.model)
 	.then(() => onSubmitSuccess())
 	.catch(error => onSubmitError(error))
 }
@@ -70,6 +70,7 @@ function back() {
 	else router.push({ name: ROUTE_NAMES.ARTICLE_INDEX })
 }
 function onSubmitSuccess() {	
+	console.log('onSubmitSuccess')
 	let msg = `${title.value}成功`
 	onSuccess(msg)
 	back()

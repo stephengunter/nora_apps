@@ -77,7 +77,7 @@ const adminlinks = [{
 }]
 
 const guestLinks = [{
-   name: 'login',
+   name: ROUTE_NAMES.LOGIN,
    path: '/login',
    view: 'Login',
    meta: {

@@ -1,26 +1,24 @@
-import { GUEST_ONLY, ADMIN_ONLY } from '@/consts';
-import appRoutes from '@/routes/app';
+import { ROUTE_TYPES } from '@/consts'
+import appRoutes from '@/routes/app'
 
-export const getMainMenus = (currentRoute, auth) => {
-   let routes = [];
-   if(auth) {
-      routes = appRoutes.filter(item => item.meta.type !== GUEST_ONLY);
+export const getMainMenus = (currentRoute, user) => {
+   let routes = []
+   if(user) {
+      routes = appRoutes.filter(item => item.meta.type !== ROUTE_TYPES.GUEST_ONLY)
    }else {
-      routes = appRoutes.filter(item => item.meta.type !== ADMIN_ONLY);
+      routes = appRoutes.filter(item => item.meta.type !== ROUTE_TYPES.ADMIN_ONLY)
    }
    
-   let mainLinks = getMainLinks(routes);
-   mainLinks.forEach(item => {
-      item.active =  (item.name === currentRoute.name);
-      item.subs = getSubLinks(routes, item.name);
-      item.subs.forEach(subItem => {
-         subItem.active =  (subItem.name === currentRoute.name);
-      });
-   });
+   let mainLinks = getMainLinks(routes)
+   // mainLinks.forEach(item => {
+   //    item.active =  (item.name === currentRoute.name)
+   //    item.subs = getSubLinks(routes, item.name)
+   //    item.subs.forEach(subItem => {
+   //       subItem.active =  (subItem.name === currentRoute.name)
+   //    })
+   // })
 
-   return mainLinks;
+   return mainLinks
 }
 
-const getMainLinks = (routes) => routes.filter(item => item.meta.menu && !item.parent);
-
-const getSubLinks = (routes, parent) => routes.filter(item => item.parent === parent);
+const getMainLinks = (routes) => routes.filter(item => item.meta.menu)

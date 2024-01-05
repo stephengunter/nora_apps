@@ -1,11 +1,10 @@
-import BaseService from '@/common/baseService';
-import { API_URL } from '@/config';
+import BaseService from '@/common/baseService'
+import { API_URL } from '@/config'
 
-const source =`${API_URL}/api/articles`;
+const source =`${API_URL}/api/articles`
 
-const fetch = (params) => BaseService.fetch(source, params);
+const fetch = (params) => BaseService.fetch(source, params)
 
-const details = (id) => BaseService.fetch(`${source}/${id}`);
+const get = (id) => BaseService.fetch(`${source}/${id}`)
 
-
-export default { fetch, details };
+export default { fetch, get }

@@ -1,21 +1,15 @@
 import Errors from '@/common/errors'
 import BaseService from '@/common/baseService'
-import JwtService from '@/services/jwt.service'
 import AuthService from '@/services/auth.service'
-import { resolveUserFromClaims, isAdmin } from '@/utils'
+import OAuthService from '@/services/oAuth.service'
+import JwtService from '@/services/jwt.service'
+import { resolveUserFromClaims, isAdmin, isEmptyObject } from '@/utils'
 
-import { CHECK_AUTH, LOGIN, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
+import { CHECK_AUTH, LOGIN, LOGIN_BY_GOOGLE, LOGOUT, REFRESH_TOKEN } from '@/store/actions.type'
+import { SET_AUTH, PURGE_AUTH, SET_USER, SET_LOADING } from '@/store/mutations.type'
 
-
-import { 
-   SET_AUTH, PURGE_AUTH, SET_USER,  SET_ERROR, CLEAR_ERROR, SET_LOADING
-} from '@/store/mutations.type'
-
- 
 const state = {
-   errors: new Errors(),
-   user: {},
-   isAuthenticated: !!JwtService.getToken()
+   user: {}
 }
 
 const getters = {
@@ -23,28 +17,55 @@ const getters = {
      return state.user
    },
    isAuthenticated(state) {
-     return state.isAuthenticated
+     return !isEmptyObject(state.user)
    }
 }
 
+const defaultError = {
+   status: 400,
+   data: {'': ['身分驗證失敗, 請重新登入.']}
+}
+
 const actions = {
-   [LOGIN](context, token) {
+   [LOGIN](context, form) {
       context.commit(SET_LOADING, true)
       return new Promise((resolve, reject) => {
-         AuthService.login({ token })
+         AuthService.login(form)
          .then(model => {
             context.commit(SET_AUTH, {
-               token: model.accessToken.token,
+               token: model.token,
                refreshToken: model.refreshToken
             }) 
-            resolve(null)
+            context.dispatch(CHECK_AUTH)
+            .then(result => {
+               console.log('result', result)
+               if(result) resolve() //is admin
+               else reject(defaultError)
+            })
+            .catch(() => reject(defaultError))            
          })
-         .catch(error => {
-            reject(error)
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
+      })     
+   },
+   [LOGIN_BY_GOOGLE](context, token) {
+      context.commit(SET_LOADING, true)
+      return new Promise((resolve, reject) => {
+         OAuthService.googleLogin(token)
+         .then(model => {
+            context.commit(SET_AUTH, {
+               token: model.token,
+               refreshToken: model.refreshToken
+            })  
+            context.dispatch(CHECK_AUTH)
+            .then(result => {
+               if(result) resolve() //is admin
+               else reject(defaultError)
+            })
+            .catch(() => reject(defaultError))
          })
-         .finally(() => { 
-            context.commit(SET_LOADING, false)
-         })
+         .catch(error => reject(error))
+         .finally(() => context.commit(SET_LOADING, false))
       })     
    },
    [LOGOUT](context) {
@@ -53,7 +74,7 @@ const actions = {
          setTimeout(() => {
             resolve(true)
          }, 500)
-      }) 
+      })
    },
    [CHECK_AUTH](context) {
       return new Promise((resolve) => {
@@ -62,16 +83,11 @@ const actions = {
             BaseService.setHeader(token)
             let claims = JwtService.resolveClaims(token)
             let user = resolveUserFromClaims(claims)
-            if(isAdmin(user)) {
-               context.commit(SET_USER, user) 
-               resolve(true)
-            }else {
-               context.commit(PURGE_AUTH)
-               resolve(false)
-            }            
+            context.commit(SET_USER, user) 
+            resolve(user)           
          }else {
             context.commit(PURGE_AUTH)
-            resolve(false)
+            resolve(null)
          }
       })
    },
@@ -80,11 +96,12 @@ const actions = {
       return new Promise((resolve) => {
          let accessToken = JwtService.getToken()
          let refreshToken = JwtService.getRefreshToken()
+         let claims = JwtService.resolveClaims(accessToken)
          if(accessToken && refreshToken) {
-            AuthService.refreshToken({ accessToken, refreshToken })
+            AuthService.refreshToken(claims.id, { accessToken, refreshToken })
             .then(model => {
                context.commit(SET_AUTH, {
-                  token: model.accessToken.token,
+                  token: model.token,
                   refreshToken: model.refreshToken
                })
                resolve(true)
@@ -93,9 +110,7 @@ const actions = {
                context.commit(PURGE_AUTH)
                resolve(false)           
             })
-            .finally(() => { 
-               context.commit(SET_LOADING, false)
-            })
+            .finally(() => context.commit(SET_LOADING, false))
          }else {
             context.commit(PURGE_AUTH)
             resolve(false)
@@ -106,25 +121,15 @@ const actions = {
 
 
 const mutations = {
-   [SET_ERROR](state, errors) {
-      state.errors.record(errors)
-   },
-   [CLEAR_ERROR](state) {
-      state.errors.clear()   
-   },
    [SET_USER](state, user) {
       state.user = user
    },
-   [SET_AUTH](state, model) {
-      
-      JwtService.saveToken(model.token, model.refreshToken)
-      let claims = JwtService.resolveClaims(model.token)
+   [SET_AUTH](state, { token, refreshToken }) {
+      JwtService.saveToken(token, refreshToken)
+      let claims = JwtService.resolveClaims(token)
+     
       let user = resolveUserFromClaims(claims)
       state.user = user
-
-      state.isAuthenticated = true
-      state.errors = new Errors()
-      
    },
    [PURGE_AUTH](state) {
       state.isAuthenticated = false

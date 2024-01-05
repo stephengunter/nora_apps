@@ -28,7 +28,7 @@ const headers = [
       title: '日期',
       align: 'start',
       sortable: false,
-      key: 'createdAt',
+      key: 'createdAtText',
    },
 ]
 
@@ -58,9 +58,6 @@ function select(id) {
    >
       <template v-slot:item.title="{ item }">
          <a href="#" @click.prevent="select(item.id)">{{ item.title }}</a>
-      </template>
-      <template v-slot:item.createdAt="{ item }">
-         {{ $filters.defaultDateTime(item.createdAt) }}
       </template>
    </v-data-table-server>
 </template>

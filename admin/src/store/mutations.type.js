@@ -23,58 +23,12 @@ export const SET_EXCEPTIONS = 'setExceptions'
 export const SET_EXCEPTION_TYPES = 'setExceptionTypes'
 export const SET_EXCEPTION_PERIOD = 'setExceptionPeriod'
 
-//Messages
-export const SET_MESSAGES = 'setMessages'
-
-//Notices
-export const SET_NOTICES = 'setNotices'
-
-//Subscribes
-export const SET_SUBSCRIBES = 'setSubscribes'
-
-//Plans
-export const SET_PLANS = 'setPlans'
-export const SET_ALL_PLANS = 'setAllPlans'
-
-//Bills
-export const SET_BILLS = 'setBills'
-
-//Pays
-export const SET_PAYS = 'setPays'
-
 //Users
 export const SET_USERS = 'setUsers'
 export const SET_ROLE_OPTIONS = 'setRoleOptions'
-
-//Subjects
-export const SET_SUBJECTS = 'setSubjects'
-
-//Terms
-export const SET_TERMS = 'setTerms'
-export const SET_TERM_PARENTS = 'setTermParents'
-
-//Notes
-export const SET_NOTE_CATEGORIES = 'setNoteCategories'
-export const SET_NOTES = 'setNotes'
 
 //Articles
 export const SET_ARTICLES = 'setArticles'
 
 //Attachments
 export const SET_ATTACHMENTS = 'setAttachments'
-
-//Recruits
-export const SET_RECRUITS = 'setRecruits'
-
-//Questions
-export const SET_QUESTIONS = 'setQuestions'
-
-//Resolves
-export const SET_RESOLVES = 'setResolves'
-
-//Manuals
-export const SET_MANUALS = 'setManuals'
-
-//Analysis
-export const SET_ANALYSIS_VIEWS = 'setAnalysisViews'
-export const SET_ANALYSIS_RESULT = 'setAnalysisResult'

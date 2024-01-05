@@ -48,7 +48,7 @@ function fetchData(params) {
 	store.dispatch(FETCH_ARTICLES, params)
 	.then(() => {
 		nextTick(() => {
-			console.log('damn', pagedList.value)
+			//console.log('damn', pagedList.value)
 		})
 	})
 	.catch(error => {

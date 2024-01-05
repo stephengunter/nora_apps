@@ -1,4 +1,4 @@
-import { FOR_ALL, GUEST_ONLY, USER_ONLY, ADMIN_ONLY } from '@/consts'
+import { ROUTE_TYPES, ROUTE_NAMES } from '@/consts'
 
 const applinks = [{
    name: 'home',
@@ -9,7 +9,6 @@ const applinks = [{
       order: 0,
       icon: 'mdi-home',
       title: '首頁',
-      type: USER_ONLY,
       menu: true
    } 
 },{
@@ -21,7 +20,6 @@ const applinks = [{
       order: 0,
       icon: 'mdi-puzzle',
       title: '小遊戲',
-      type: USER_ONLY,
       menu: true
    } 
 },{
@@ -33,11 +31,10 @@ const applinks = [{
       order: 0,
       icon: 'mdi-tools',
       title: '工具箱',
-      type: USER_ONLY,
       menu: true
    } 
 },{
-   name: 'article',
+   name: ROUTE_NAMES.ARTICLE_DETAILS,
    path: '/article/:id',
    view: 'Article',
    parent: '',
@@ -45,7 +42,6 @@ const applinks = [{
       order: 0,
       icon: '',
       title: '',
-      type: USER_ONLY,
       menu: false
    } 
 }]
@@ -58,16 +54,25 @@ const guestLinks = [{
    meta: {
       icon: 'mdi-login-variant',
       title: 'Login',
-      type: GUEST_ONLY,
       menu: true
    } 
 }]
 
 const adminlinks = []
 
+applinks.forEach(page => {
+   page.meta.type = ROUTE_TYPES.FOR_ALL
+})
+adminlinks.forEach(page => {
+   page.meta.type = ROUTE_TYPES.ADMIN_ONLY
+})
+guestLinks.forEach(page => {
+   page.meta.type = ROUTE_TYPES.GUEST_ONLY
+})
+
 let appRoutes = applinks.concat(adminlinks).concat(guestLinks)
 
-for(let i = 0; i < appRoutes.length; i++) {
+for(let i = 0; i < appRoutes.length; i++){
    appRoutes[i].meta.order = i
 }
 

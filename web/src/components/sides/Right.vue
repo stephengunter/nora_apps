@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { SET_TAGS } from '@/store/mutations.type'
+//import { SET_TAGS } from '@/store/mutations.type'
 
 const store = useStore()
 
@@ -13,7 +13,7 @@ onMounted(() => {
    },{
       title: '好物安利', ac: 18
    }]
-   store.commit(SET_TAGS, items)
+   //store.commit(SET_TAGS, items)
 })
 
 const tags = computed(() => store.getters.tags)

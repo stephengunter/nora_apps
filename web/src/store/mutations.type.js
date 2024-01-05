@@ -1,7 +1,4 @@
-export const SET_MQ = 'setMq'
 export const SET_LOADING = 'setLoading'
-export const SET_WINDOW_WIDTH = 'setWindowWidth'
-export const SET_RESPONSIVE = 'setResponsive'
 
 export const SET_THEME_IMAGE = 'setThemeImage'
 export const SET_THEME_COLOR = 'setThemeColor'
@@ -16,10 +13,22 @@ export const PURGE_AUTH = 'logOut'
 export const SET_AUTH = 'setAuth'
 export const SET_USER = 'setUser'
 
+export const SET_ROUTE = 'setRoute'
 
-export const SET_ERROR = 'setError'
-export const CLEAR_ERROR = 'clearError'
+export const SET_ERRORS = 'setErrors'
+export const CLEAR_ERRORS = 'clearErrors'
+
+//Exceptions
+export const SET_EXCEPTIONS = 'setExceptions'
+export const SET_EXCEPTION_TYPES = 'setExceptionTypes'
+export const SET_EXCEPTION_PERIOD = 'setExceptionPeriod'
+
+//Users
+export const SET_USERS = 'setUsers'
+export const SET_ROLE_OPTIONS = 'setRoleOptions'
 
 //Articles
-export const SET_ARTICLES = 'setArticles';
-export const SET_TAGS = 'setTags'
+export const SET_ARTICLES = 'setArticles'
+
+//Attachments
+export const SET_ATTACHMENTS = 'setAttachments'

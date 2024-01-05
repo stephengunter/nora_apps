@@ -1,31 +1,40 @@
 <script setup>
-import { MqResponsive } from 'vue3-mq'
-import { ref, watch, onBeforeMount} from 'vue'
+import { reactive, computed, watch, onBeforeMount} from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
-import { isEmptyObject } from '@/utils'
+import { MqResponsive } from 'vue3-mq'
+import { useRoute, useRouter } from 'vue-router'
 import { ARTICLE_DETAILS } from '@/store/actions.type'
+import { converCustomTags, isEmptyObject } from '@/utils'
 
-const route = useRoute()
+const name = 'ArticlesView'
 const store = useStore()
+const route = useRoute()
+const router = useRouter()
 
-const model = ref({})
-
-
-onBeforeMount(() => {
-	let id = route.params.id
-	fetchData(id)
+const initialState = {
+   model: {
+		title: '',
+		content: ''
+	}
+}
+const state = reactive({
+   ...initialState,
 })
+const content = computed(() => converCustomTags(state.model.content))
+
+watch(route, init)
+onBeforeMount(init)
+
+function init() {
+	fetchData(route.params.id ? route.params.id : 0)
+}
 function fetchData(id) {
    store.dispatch(ARTICLE_DETAILS, id)
-	.then(article => {
-		model.value = article
-	})
+	.then(model => state.model = { ...model })
    .catch(error => {
       console.log(error);
    })
 }
-
 </script>
 
 <template>
@@ -35,42 +44,41 @@ function fetchData(id) {
 				<v-col cols="9">
 					<v-row>
                   <v-col cols="12">
-                     <p class="text-h5">
+                     <!-- <p class="text-h5">
 								{{ model.title }}
-							</p>
+							</p> -->
 							<!-- <div class="text-subtitle-1">
 								{{ model.summary}}
 							</div> -->
                   </v-col>
-						<v-col cols="12">
+						<!-- <v-col cols="12">
                      <articles-bottom :model="model" />
                   </v-col>
 						<v-col cols="12">
 							<article v-html="model.content" />
-                  </v-col>
+                  </v-col> -->
                </v-row>
 				</v-col>
 				<v-col cols="3">
 					<sides-right />
 				</v-col>
 			</v-row>
+
 		</MqResponsive>
 		<MqResponsive target="sm-">
 			<v-fade-transition mode="out-in">
-				<v-row>
+				<v-row dense>
 					<v-col cols="12">
 						<p class="text-h5">
-							{{ model.title }}
+							{{ state.model.title }}
 						</p>
-						<!-- <div class="text-subtitle-1">
-							{{ model.summary }}
-						</div> -->
 					</v-col>
 					<v-col cols="12">
-						<articles-bottom :model="model" />
+						<ArticlesBottom :model="state.model" />
 					</v-col>
 					<v-col cols="12">
-						<article v-html="model.content" />
+						<article v-html="content">
+   					</article>
 					</v-col>
 				</v-row>
          </v-fade-transition>
@@ -78,10 +86,3 @@ function fetchData(id) {
 	</v-container>
 </template>
 
-
-
-<style scoped>
-.bt-item {
-   font-size:small;
-}
-</style>

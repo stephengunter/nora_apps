@@ -6,6 +6,8 @@ import { GET_PROFILES, UPDATE_PROFILES, SHOW_CONFIRM, HIDE_CONFIRM, LOGOUT } fro
 import { SET_ERRORS } from '@/store/mutations.type'
 import { setValues, resolveErrorData, onErrors, onSuccess } from '@/utils'
 import { DIALOG_MAX_WIDTH } from '@/config'
+import { ROUTE_NAMES } from '@/consts'
+
 
 const name = 'ProfilesView'
 const store = useStore()
@@ -52,7 +54,7 @@ function onUpdated(msg) {
 		onOk: () => {
 			Bus.emit(HIDE_CONFIRM)
 			store.dispatch(LOGOUT)
-   		.then(() => router.push({ name: 'login' }))
+   		.then(() => router.push({ name: ROUTE_NAMES.LOGIN }))
 		}
 	})
 }

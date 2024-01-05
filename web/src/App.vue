@@ -9,12 +9,12 @@ const store = useStore()
 
 <template>
    <v-app>
-      <layouts-header />
-      <layouts-drawer />
+      <LayoutsHeader />
+      <LayoutsDrawer />
       <v-main id="layout-view">
          <router-view />
       </v-main>
-      <layouts-loading />
+      <LayoutsFeedback />
    </v-app>
 </template>
 

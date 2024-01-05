@@ -1,26 +1,27 @@
 <template>
-   <v-overlay :model-value="loading" class="align-center justify-center">
-         <v-progress-circular color="primary" indeterminate size="48">
+   <v-overlay :model-value="loading" persistent 
+   class="align-center justify-center" 
+   >
+      <div class="text-center">
+         <v-progress-circular indeterminate size="48">
          </v-progress-circular>
-         <p class="mt-3">
-         {{ loadingText }}
+         <p v-if="loadingText" style="margin:12px">
+            {{ loadingText }}
          </p>
+      </div>
    </v-overlay>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex'
 export default {
    name: 'LayoutLoading',
-   computed:{
-      ...mapState({
+   computed: {
+		...mapState({
 			loading: state => state.app.loading,
-			loadingText: state => state.app.loadingText
+         loadingText: state => state.app.loadingText
 		})
-	},
+	}
 }
+
 </script>
-
-<style>
-
-</style>

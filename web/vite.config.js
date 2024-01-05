@@ -1,48 +1,58 @@
 // Plugins
 import vue from '@vitejs/plugin-vue'
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import ViteFonts from 'unplugin-fonts/vite'
+import Components from 'unplugin-vue-components/vite'
 
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import Components from 'unplugin-vue-components/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-   plugins: [
-      vue({ 
-         template: { transformAssetUrls }
-      }),
-      // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-      vuetify({
-            autoImport: true,
-            styles: {
-            configFile: 'src/styles/settings.scss',
-         },
-      }),
-      Components({
-         deep: true,
-         directoryAsNamespace: true
-         // 配置文件生成位置
-         //dts: 'src/components.d.ts'
-      })
-   ],
-   define: { 'process.env': {} },
-   resolve: {
-      alias: {
-         '@': fileURLToPath(new URL('./src', import.meta.url))
-      },
-      extensions: [
-         '.js',
-         '.json',
-         '.jsx',
-         '.mjs',
-         '.ts',
-         '.tsx',
-         '.vue',
-      ],
-   },
-   server: {
-      port: 3000,
-   }
+	plugins: [
+		vue({
+			template: { transformAssetUrls }
+		}),
+		// https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+		vuetify({
+			autoImport: true,
+			styles: {
+			configFile: 'src/styles/settings.scss',
+			},
+		}),
+		ViteFonts({
+			google: {
+			families: [{
+					name: 'Roboto',
+					styles: 'wght@100;300;400;500;700;900',
+				}],
+			},
+		}),
+		Components({
+			deep: true,
+			directoryAsNamespace: true
+			// 配置文件生成位置
+			//dts: 'src/components.d.ts'
+		})
+		//Components({ /* options */ deep: true }),
+	],
+	define: { 'process.env': {} },
+	resolve: {
+		alias: {
+			'@': fileURLToPath(new URL('./src', import.meta.url))
+		},
+		extensions: [
+			'.js',
+			'.json',
+			'.jsx',
+			'.mjs',
+			'.ts',
+			'.tsx',
+			'.vue',
+		],
+	},
+	server: {
+		port: 8080,
+	},
 })

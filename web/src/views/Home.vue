@@ -4,11 +4,13 @@ import { ref, watch, onBeforeMount, computed} from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { FETCH_ARTICLES } from '@/store/actions.type'
+import { ROUTE_NAMES } from '@/consts'
+import { resolveErrorData, onErrors, onSuccess } from '@/utils'
 
 const router = useRouter()
 const store = useStore()
 
-const articles = computed(() => store.getters.articles)
+const articles = computed(() => store.state.articles.list)
 
 onBeforeMount(() => {
 	fetchData()
@@ -16,13 +18,10 @@ onBeforeMount(() => {
 function fetchData() {
    let params = { }
    store.dispatch(FETCH_ARTICLES, params)
-   .catch(error => {
-      console.log(error);
-   })
+   .catch(error => onErrors(error))
 }
 function onSelected(id) {
-   console.log('onSelected', id)
-   router.push({ name: 'article', params: { id } })
+   router.push({ name: ROUTE_NAMES.ARTICLE_DETAILS, params: { id } })
 }
 </script>
 
@@ -33,10 +32,10 @@ function onSelected(id) {
             <v-col cols="9">
                <v-row>
                   <v-col>
-                     <carousels-headline />
+                     <CarouselsHeadline />
                   </v-col>
                </v-row>
-               <articles-item v-for="article in articles"
+               <ArticlesItem v-for="article in articles"
                :model="article"
                @selected="onSelected"
                />
@@ -50,7 +49,7 @@ function onSelected(id) {
          <v-fade-transition mode="out-in">
             <v-row>
                <v-col cols="12">
-                  <articles-item v-for="article in articles"
+                  <ArticlesItem v-for="article in articles"
                   :model="article"
                   @selected="onSelected"
                   />

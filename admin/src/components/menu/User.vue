@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { LOGOUT } from '@/store/actions.type'
 import { shortName } from '@/utils'
+import { ROUTE_NAMES } from '@/consts'
 
 const name = 'MenuUser'
 const props = defineProps({
@@ -40,7 +41,7 @@ function onSelected(name) {
 }
 function logout() {
    store.dispatch(LOGOUT)
-   .then(() => router.push({ name: 'login' }))   
+   .then(() => router.push({ name: ROUTE_NAMES.LOGIN }))   
 }
 function profiles() {
    router.push({ name: 'profiles' })

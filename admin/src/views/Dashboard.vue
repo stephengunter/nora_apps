@@ -7,7 +7,6 @@ const data = reactive({
 	text: '<p>Example Text</p><p>I will display &#x1f60e;</p>'
 })
 
-const accountBalance = '995'
 function save() {
 	onSuccess('登入成功')
    // const content = tiptap.value.getContent()
@@ -27,10 +26,13 @@ onMounted(() => {
 	<div>
 	<v-row>
 		<v-col cols="12">
-			<p>{{ $filters.currencyUSD(accountBalance) }}</p>
+			<p>
+				cscscc
 			<span style="display: inline-block;" class="qqface-wrapper">
-				<img src="/qqface.png" class="qqface qqface5">
+				<img src="/qqface.png" class="qqface qqface15">
 			</span>
+			</p>
+			
 		</v-col>
 		<v-col cols="12">
 			<editor-tiptap ref="tiptap" />

@@ -1,6 +1,8 @@
 <script setup>
-import { reactive, computed, onBeforeMount } from 'vue'
+import { computed } from 'vue'
 import { MqResponsive } from 'vue3-mq'
+import { converCustomTags, isEmptyObject, removeHtmlTags } from '@/utils'
+
 const props = defineProps({
    model: {
 		type: Object,
@@ -8,8 +10,19 @@ const props = defineProps({
 	}
 })
 const emit = defineEmits(['selected'])
+const content = computed(() => {
+   if(isEmptyObject(props.model)) return ''
+   return converCustomTags(props.model.content)
+})
+const summary = computed(() => {
+   if(isEmptyObject(props.model)) return ''
+   if(props.model.summary) return props.model.summary
+   
+   let raw = removeHtmlTags(content.value)
+   return `${raw.slice(0, 100)}...`
+})
+
 function select() {
-   console.log('select', props.model.id)
    emit('selected', props.model.id);
 }
 
@@ -30,7 +43,7 @@ function select() {
                         {{ model.title }}
                      </a>
                      <div class="text-subtitle-1">
-                        {{ model.summary}}
+                        {{ summary}}
                      </div>
                   </v-col>
                   <v-col cols="12" align-self="end">
@@ -57,7 +70,9 @@ function select() {
                      </v-img>
                   </a>
                   <v-card-text>
-                     {{ model.summary}}
+                     <a href="#" @click.prevent="select" > 
+                     {{ summary}}
+                     </a>
                   </v-card-text>
                   <v-card-actions>
                      <articles-bottom :model="model" />
